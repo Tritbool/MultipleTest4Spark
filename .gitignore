@@ -1,0 +1,7 @@
+/target
+/spark-warehouse
+/.idea
+/project/target
+/project/project
+*.log
+*.iml
