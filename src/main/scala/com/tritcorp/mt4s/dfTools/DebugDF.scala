@@ -1,4 +1,5 @@
 package com.tritcorp.mt4s.dfTools
+
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
@@ -15,67 +16,37 @@ package com.tritcorp.mt4s.dfTools
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 import java.sql.{Date, Timestamp}
 
+import com.tritcorp.mt4s.DebugDatasetBase
 import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, LogLevel, WARN}
-import com.typesafe.scalalogging.LazyLogging
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
-import org.apache.spark.sql.{DataFrame, SQLContext}
-import org.apache.spark.SparkContext
+import org.apache.spark.sql.DataFrame
+import com.tritcorp.mt4s.Constants._
 
 /**
   * DebugDF encapsulates a DataFrame and adds logging and debugging tools to it.
+  *
   * @param df the DataFrame to debug
   */
-class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
+class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame] {
 
 
-  private val ss = df.sparkSession
-  private val sc: SparkContext = ss.sparkContext
-  private val sqlContext: SQLContext = ss.sqlContext
-  private var logLvl:LogLevel = WARN
+  ss = df.sparkSession
+  sc = ss.sparkContext
+  sqlContext = ss.sqlContext
+  logLvl = WARN
 
-  logger.info("Current Spark app is : " + ss.sparkContext.appName)
+  logger.debug("Current Spark app is : " + ss.sparkContext.appName)
 
   setLogLevel(logLvl)
-
-  /** used to set the log level of the test class
-    *
-    * @param lvl the log level to apply
-    * @see com.tritcorp.testing.logger.DebugMode
-    */
-  def setLogLevel(lvl: LogLevel): Unit = {
-    val logLvlStr: String = lvl.toString
-    sc.setLogLevel(logLvlStr)
-
-    logLvlStr match {
-      case "ALL" => logger.trace("LOG LEVEL SET TO " + logLvlStr)
-      case "TRACE" => logger.trace("LOG LEVEL SET TO " + logLvlStr)
-      case "DEBUG" => logger.debug("LOG LEVEL SET TO " + logLvlStr)
-      case "INFO" => logger.info("LOG LEVEL SET TO " + logLvlStr)
-      case "WARN" => logger.warn("LOG LEVEL SET TO " + logLvlStr)
-      case "ERROR" => logger.error("LOG LEVEL SET TO " + logLvlStr)
-      case "FATAL" => {
-        System.err.println(this.getClass.toString + " LOG LEVEL SET TO " + logLvlStr)
-        System.err.flush()
-      }
-      case "OFF" => {
-        System.err.println(this.getClass.toString + " LOG LEVEL SET TO " + logLvlStr)
-        System.err.flush()
-      }
-      case _ => {
-        System.err.println(this.getClass.toString + " INVALID LOG LEVEL. LOG LEVEL RESET TO WARN AS DEFAULT")
-        System.err.flush()
-        sc.setLogLevel("WARN")
-      }
-    }
-  }
 
 
   /** Taken from Spark DataSet.scala code in order to allow to print dataframes in logs.
     *
-    * @param df the DataFrame to show
+    * @param df       the DataFrame to show
     * @param _numRows the number of rows tu display
     * @param truncate the maximum number of rows to display
     * @return the df DataFrame as a String
@@ -167,6 +138,7 @@ class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
 
   /**
     * Show the embedded dataframe in the logger at debug level
+    *
     * @param numRows the number of rows to show
     */
   def showDebug(numRows: Int = 20): Unit = {
@@ -175,27 +147,22 @@ class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
     setLogLevel(logLvl)
   }
 
-  final val DF_EQUAL = 0
-  final val SCHEMAS_MATCH_PB = 1
-  final val DF1_BIGGER_THAN_DF2 = 2
-  final val DF2_BIGGER_THAN_DF1 = 3
-  final val DF1_AND_DF2_ROWS_DIFF = 5
-  final val UNKNOWN_PB = 4
 
   /**
-    * Compares the embedded DataFrame with the DataFrame that passed as parameter
+    * Compares the embedded DataFrame with the DataFrame that is passed as parameter
+    *
     * @param that the DataFrame to compare with the embedded DataFrame
     * @return
-    *         0 if dfs are semantically equal
-    *         1 if dfs schemas don't match
-    *         2 if the embedded df has more rows than that
-    *         3 if that has more rows than the embedded df
-    *         5 if both df have rows that don't exist in the other
-    *         4 if an unknown error occurred
+    * 0 if dfs are semantically equal
+    * 1 if dfs schemas don't match
+    * 2 if the embedded df has more rows than that
+    * 3 if that has more rows than the embedded df
+    * 5 if both df have rows that don't exist in the other
+    * 4 if an unknown error occurred
     */
   override def compare(that: DataFrame): Int = {
 
-    val ROWS_TO_SHOW=100
+    val ROWS_TO_SHOW = 100
 
     var thatReordered: DataFrame = that
     df.cache()
@@ -206,7 +173,7 @@ class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
       logger.error("Schemas sizes are different :")
       logger.error("DF1 : " + df.columns.mkString("[", ";", "]"))
       logger.error("DF2 : " + that.columns.mkString("[", ";", "]"))
-      SCHEMAS_MATCH_PB
+      SCHEMAS_MATCH_ERR
     }
     else {
 
@@ -228,24 +195,29 @@ class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
 
       val countDf1 = df.count()
       val countDf2 = that.count()
+      val diff1 = df.except(thatReordered)
+      val diff1Count = diff1.count
+
+      val diff2 = thatReordered.except(df)
+      val diff2Count = diff2.count
 
       if (countDf1 != countDf2) {
         logger.error("Dataframes have different size :")
         logger.error("DF1 : " + countDf1 + "rows")
         logger.error("DF2 : " + countDf2 + "rows")
 
-        val diff1 = df.except(thatReordered)
-        val diff1Count = diff1.count
+      }
+      if (diff1Count > 0 || diff2Count > 0) {
+
         var df1SupDf2 = DF_EQUAL
         var df2SupDf1 = DF_EQUAL
 
         if (diff1Count > 0) {
           logger.error("DF1 has " + diff1Count + " line(s) that don't exist in DF2")
-          logger.error(showString(diff1,ROWS_TO_SHOW, ROWS_TO_SHOW))
+          logger.error(showString(diff1, ROWS_TO_SHOW, ROWS_TO_SHOW))
           df1SupDf2 = DF1_BIGGER_THAN_DF2
         }
-        val diff2 = thatReordered.except(df)
-        val diff2Count = diff2.count
+
 
         if (diff2Count > 0) {
           logger.error("DF2 has " + diff2Count + " line(s) that don't exist in DF1")
@@ -262,13 +234,14 @@ class DebugDF(var df: DataFrame) extends LazyLogging with Ordered[DataFrame] {
           logger.warn("Dataframes contents are identical")
           DF_EQUAL
         }
-        else UNKNOWN_PB
+        else UNKNOWN_ERR
       }
     }
   }
 
   /**
     * equalsDF transforms compare to a boolean equality.
+    *
     * @param that the df to compare to the embedded df
     * @return true if dfs are equal else false.
     */

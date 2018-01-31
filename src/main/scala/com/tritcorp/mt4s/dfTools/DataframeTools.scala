@@ -21,7 +21,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 
 object DataframeTools extends LazyLogging {
 
-  private val conf = new SparkConf().setAppName("Comparison").setMaster("local[*]")
+  private val conf = new SparkConf().setAppName("DataframeTools").setMaster("local[*]")
   private val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   private val sc: SparkContext = ss.sparkContext
   private val sqlContext: SQLContext = ss.sqlContext
@@ -29,6 +29,7 @@ object DataframeTools extends LazyLogging {
 
 
   def readCsvLocal(path: String, delimiter: String = ";", encoding: String = "UTF-8"): Option[DataFrame] = {
+    logger.debug("Attempting to load csv file at : "+ getClass.getResource(path).toString())
     Option(ss.read
       .option("delimiter", delimiter)
       .option("inferSchema", "true")

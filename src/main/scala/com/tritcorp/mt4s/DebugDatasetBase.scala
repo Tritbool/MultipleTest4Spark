@@ -1,4 +1,10 @@
 package com.tritcorp.mt4s
+
+import com.tritcorp.mt4s.logger.DebugMode.{LogLevel, WARN}
+import com.typesafe.scalalogging.LazyLogging
+import org.apache.spark.SparkContext
+import org.apache.spark.sql.{SQLContext, SparkSession}
+
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
@@ -15,27 +21,12 @@ package com.tritcorp.mt4s
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, LogLevel}
-import com.typesafe.scalalogging.LazyLogging
-import org.apache.spark.sql.{SQLContext, SparkSession}
-import org.apache.spark.{SparkConf, SparkContext}
 
-/**
-  * Trait that contains the basic stuff for Spark test classes
-  */
-trait TestBase extends LazyLogging {
-
-  val conf: SparkConf = new SparkConf().setAppName("SPARK TEST").setMaster("local[*]")
-  val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
-  val sc: SparkContext = ss.sparkContext
-  val sqlContext: SQLContext = ss.sqlContext
-  var logLvl: LogLevel = DEBUG
-  ConsoleHeader.printHeader()
-
-
-  logger.info("Spark app launched as : " + ss.sparkContext.appName)
-
-  setLogLevel(logLvl)
+trait DebugDatasetBase extends LazyLogging{
+  protected var ss:SparkSession = _
+  protected var sc: SparkContext = _
+  protected var sqlContext: SQLContext = _
+  protected var logLvl:LogLevel = WARN
 
 
   /** used to set the log level of the test class
@@ -55,7 +46,7 @@ trait TestBase extends LazyLogging {
       case "WARN" => logger.warn("LOG LEVEL SET TO " + logLvlStr)
       case "ERROR" => logger.error("LOG LEVEL SET TO " + logLvlStr)
       case "FATAL" => {
-        System.err.println(this.getClass.toString + "LOG LEVEL SET TO " + logLvlStr)
+        System.err.println(this.getClass.toString + " LOG LEVEL SET TO " + logLvlStr)
         System.err.flush()
       }
       case "OFF" => {
@@ -69,5 +60,6 @@ trait TestBase extends LazyLogging {
       }
     }
   }
+
 
 }

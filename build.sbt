@@ -18,3 +18,5 @@ libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.0.4",
   "org.scalatest" %% "scalatest" % "3.0.4"
 )
+
+parallelExecution in Test := false

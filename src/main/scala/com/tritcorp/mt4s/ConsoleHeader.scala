@@ -15,7 +15,7 @@ package com.tritcorp.mt4s
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-object Header {
+object ConsoleHeader {
 
   private var headerShown: Boolean = false;
 
@@ -53,8 +53,9 @@ object Header {
       System.err.println(".------------------------------------------------------------------------------------------------.")
       System.err.println("")
       System.err.println("MT4S  Copyright (C) 2018  Gauthier LYAN")
+      System.err.println(LICENSE)
       System.err.println("This program comes with ABSOLUTELY NO WARRANTY")
-      System.err.println("This is free software, and you are welcome to redistribute it under certain conditions;")
+      System.err.println("This is free software, and you are welcome to redistribute it under certain conditions")
       System.err.println("")
       System.err.println("")
 

@@ -1,4 +1,5 @@
-package com.tritcorp.mt4s.junit
+package com.tritcorp.mt4s
+
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
@@ -15,13 +16,16 @@ package com.tritcorp.mt4s.junit
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import com.tritcorp.mt4s.TestBase
-import com.typesafe.scalalogging.LazyLogging
-import junit.framework.TestCase
+object Constants {
 
-/**
-  * Test class that exposes Junit testing tools.
-  */
-abstract class junitTest extends TestCase with TestBase with LazyLogging {
+  /**
+    * DataFrames/RDD Comparison constants
+    */
+  final val DF_EQUAL = 0
+  final val SCHEMAS_MATCH_ERR = 1
+  final val DF1_BIGGER_THAN_DF2 = 2
+  final val DF2_BIGGER_THAN_DF1 = 3
+  final val DF1_AND_DF2_ROWS_DIFF = 5
+  final val UNKNOWN_ERR = 4
 
 }

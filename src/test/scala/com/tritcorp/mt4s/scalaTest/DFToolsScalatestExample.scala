@@ -15,15 +15,18 @@ package com.tritcorp.mt4s.scalaTest
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import com.tritcorp.mt4s.junit._
-import com.tritcorp.mt4s.logger.DebugMode.{ERROR, WARN}
+
+import com.tritcorp.mt4s.logger.DebugMode._
 import com.tritcorp.mt4s.dfTools.DataframeTools._
+import org.apache.spark.sql.functions.{col, udf}
+
+case class X(Reponse: String, Entite: String)
 
 class TestingScalatest extends FlatSpecTest{
 
   setLogLevel(WARN)
 
-  "DFs" should "be identical" in {
+  "DFs" must "be identical" in {
     import sqlContext.implicits._
 
     val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
@@ -48,6 +51,22 @@ class TestingScalatest extends FlatSpecTest{
 
   "File" should "be loaded" in {
     assert(readCsvLocal("/test.csv").nonEmpty)
+  }
+
+  "Licenses" should "all be open source" in {
+
+    val df = readCsvLocal("/licenses.csv",",").orNull
+    val pattern = ".*(BSD|APACHE|MIT|GPL|GNU|NONE|CDDL|COMMON PUBLIC LICENSE|COMMON DEVELOPMENT|ASL|PUBLIC DOMAIN|MPL|MOZILLA|UNRECOGNIZED).*".r
+    val licensesCleaning:(String=>String)=(l:String)=>{
+
+      if(pattern.findFirstMatchIn(l.toUpperCase()).isEmpty) "ERROR" else "OK"
+
+    }
+    val licensesUdf= udf(licensesCleaning)
+    val deduplicatedLicenses = df.dropDuplicates("Category").select("Category","License").withColumn("OpenSource",licensesUdf(col("Category")))
+
+    assert(deduplicatedLicenses.filter(col("OpenSource").equalTo("ERROR")).count()==0)
+
   }
 
 

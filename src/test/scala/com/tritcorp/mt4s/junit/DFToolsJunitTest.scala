@@ -1,4 +1,5 @@
 package com.tritcorp.mt4s.junit
+
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
@@ -15,28 +16,29 @@ package com.tritcorp.mt4s.junit
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+
 import com.tritcorp.mt4s.dfTools.DataframeTools._
 import com.tritcorp.mt4s.logger.DebugMode.WARN
 import org.apache.spark.sql.functions._
 import org.junit.Test
-
+import com.tritcorp.mt4s.Constants._
 case class X(Reponse: String, Entite: String)
 
-class TestingJunitTest extends junitTest {
+class TestingJunitTest extends JunitTest {
 
   @Test
-  def testLicensesAreOpenSource(): Unit ={
-    val df = readCsvLocal("/licenses.csv",",").orNull
+  def testLicensesAreOpenSource(): Unit = {
+    val df = readCsvLocal("/licenses.csv", ",").orNull
     val pattern = ".*(BSD|APACHE|MIT|GPL|GNU|NONE|CDDL|COMMON PUBLIC LICENSE|COMMON DEVELOPMENT|ASL|PUBLIC DOMAIN|MPL|MOZILLA|UNRECOGNIZED).*".r
-    val licensesCleaning:(String=>String)=(l:String)=>{
+    val licensesCleaning: (String => String) = (l: String) => {
 
-      if(pattern.findFirstMatchIn(l.toUpperCase()).isEmpty) "ERROR" else "OK"
+      if (pattern.findFirstMatchIn(l.toUpperCase()).isEmpty) "ERROR" else "OK"
 
     }
-    val licensesUdf= udf(licensesCleaning)
-    val deduplicatedLicenses = df.dropDuplicates("Category").select("Category","License").withColumn("OpenSource",licensesUdf(col("Category")))
+    val licensesUdf = udf(licensesCleaning)
+    val deduplicatedLicenses = df.dropDuplicates("Category").select("Category", "License").withColumn("OpenSource", licensesUdf(col("Category")))
 
-    assert(deduplicatedLicenses.filter(col("OpenSource").equalTo("ERROR")).count()==0)
+    assert(deduplicatedLicenses.filter(col("OpenSource").equalTo("ERROR")).count() == 0)
 
   }
 
@@ -74,10 +76,55 @@ class TestingJunitTest extends junitTest {
       ("Femme", "non"),
       ("Enfant", "sussmoe"))).toDF(columns: _*)
 
-    assert(df!=df2)
-    assert(df2!=df)
+    assert(df.compare(df2)==DF2_BIGGER_THAN_DF1)
+    assert(df2.compare(df)==DF1_BIGGER_THAN_DF2)
 
   }
+
+  @Test
+  def testSameSizeDifferentContent() {
+    import sqlContext.implicits._
+
+    setLogLevel(WARN)
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien","WOUF")))
+    val df = rdd.toDF()
+
+    df.show
+    val columns = Array("Entite", "Reponse")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"),
+      ("Enfant", "sussmoe"))).toDF(columns: _*)
+
+    df2.show
+
+    assert(df.compare(df2)==DF1_AND_DF2_ROWS_DIFF)
+    assert(df2.compare(df)==DF1_AND_DF2_ROWS_DIFF)
+
+  }
+
+  @Test
+  def testBothDifferentContent() {
+    import sqlContext.implicits._
+
+    setLogLevel(WARN)
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien","WOUF"), X("Pâté","croûte")))
+    val df = rdd.toDF()
+
+    df.show
+    val columns = Array("Entite", "Reponse")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"),
+      ("Enfant", "sussmoe"))).toDF(columns: _*)
+
+    df2.show
+
+    assert(df.compare(df2)==DF1_AND_DF2_ROWS_DIFF)
+    assert(df2.compare(df)==DF1_AND_DF2_ROWS_DIFF)
+
+  }
+
 
   @Test
   def testWrongSchemas() {
@@ -86,17 +133,17 @@ class TestingJunitTest extends junitTest {
     val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
     val df = rdd.toDF()
 
-    val columns = Array("Entite", "Reponse","Membre")
+    val columns = Array("Entite", "Reponse", "Membre")
     val df2 = sc.parallelize(Seq(
-      ("Maitre", "oui","Cadillac"),
-      ("Femme", "non","King Ju"),
-      ("Enfant", "sussmoe","Rascar-Kapac"))).toDF(columns: _*)
+      ("Maitre", "oui", "Cadillac"),
+      ("Femme", "non", "King Ju"),
+      ("Enfant", "sussmoe", "Rascar-Kapac"))).toDF(columns: _*)
 
-  //  DataframeTools.cmp(df,df2)
 
-  /*  assert(!DataframeTools.cmp(df,df2))
-    assert(!DataframeTools.cmp(df2,df))*/
+    assert(df.compare(df2)==SCHEMAS_MATCH_ERR)
+    assert(df2.compare(df)==SCHEMAS_MATCH_ERR)
 
   }
+
 
 }
