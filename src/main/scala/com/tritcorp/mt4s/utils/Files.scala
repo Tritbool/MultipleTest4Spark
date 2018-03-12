@@ -20,29 +20,33 @@ import java.io.File
 /**
   * An utility to parse folders and find files within it
   */
-object Files {
+class Files(path:String) {
 
-  def getFileTree(f: File): Stream[File] =
+  
+  val tree = getFileTree(new File(path))
+  
+  private def getFileTree(f: File): Stream[File] =
     f #:: (if (f.isDirectory) f.listFiles().toStream.flatMap(getFileTree)
     else Stream.empty)
+  
 
-  def getAllFilesStartingWith(fs: Stream[File], start: String): Stream[File] = {
-    fs.filter(_.getName.startsWith(start))
+  def getAllFilesStartingWith(start: String): Stream[File] = {
+    tree.filter(_.getName.startsWith(start))
   }
 
-  def getAllFilesEndinggWith(fs: Stream[File], end: String): Stream[File] = {
-    fs.filter(_.getName.endsWith(end))
+  def getAllFilesEndinggWith(end: String): Stream[File] = {
+    tree.filter(_.getName.endsWith(end))
   }
 
-  def getAllFilesWith(fs: Stream[File], content: String): Stream[File] = {
-    fs.filter(_.getName.contains(content))
+  def getAllFilesWith(content: String): Stream[File] = {
+    tree.filter(_.getName.contains(content))
   }
 
-  def getAllFilesEquals(fs: Stream[File], toFind: String, ignoreCase: Boolean = false): Stream[File] = {
+  def getAllFilesEquals(toFind: String, ignoreCase: Boolean = false): Stream[File] = {
     if (ignoreCase)
-      fs.filter(_.getName.equalsIgnoreCase(toFind))
+      tree.filter(_.getName.equalsIgnoreCase(toFind))
     else
-      fs.filter(_.getName.equals(toFind))
+      tree.filter(_.getName.equals(toFind))
   }
 
 }
