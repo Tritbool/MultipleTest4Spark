@@ -20,7 +20,7 @@ package com.tritcorp.mt4s.dfTools
 import java.sql.{Date, Timestamp}
 
 import com.tritcorp.mt4s.DebugDatasetBase
-import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, LogLevel, WARN}
+import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, INFO, LogLevel, WARN}
 import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.DataFrame
@@ -141,9 +141,15 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     *
     * @param numRows the number of rows to show
     */
-  def showDebug(numRows: Int = 20): Unit = {
-    setLogLevel(DEBUG)
-    logger.debug(showString(df, numRows, numRows))
+  def showDebug(numRows: Int = 20, debug:Boolean = false): Unit = {
+    if(debug){
+      setLogLevel(DEBUG)
+      logger.debug(showString(df, numRows, numRows))
+    }
+    else{
+      setLogLevel(INFO)
+      logger.info(showString(df, numRows, numRows))
+    }
     setLogLevel(logLvl)
   }
 

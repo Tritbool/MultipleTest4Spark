@@ -4,7 +4,7 @@ name := "MT4S"
 
 version := "0.1"
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.12"
 
 resolvers += "Artima" at "http://repo.artima.com/releases"
 

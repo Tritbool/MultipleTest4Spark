@@ -24,7 +24,7 @@ import org.junit.Test
 import com.tritcorp.mt4s.Constants._
 case class X(Reponse: String, Entite: String)
 
-class TestingJunitTest extends JunitTest {
+class DFToolsJunitTest extends JunitTest {
 
   @Test
   def testLicensesAreOpenSource(): Unit = {
@@ -96,7 +96,7 @@ class TestingJunitTest extends JunitTest {
       ("Femme", "non"),
       ("Enfant", "sussmoe"))).toDF(columns: _*)
 
-    df2.show
+    df2.showDebug()
 
     assert(df.compare(df2)==DF1_AND_DF2_ROWS_DIFF)
     assert(df2.compare(df)==DF1_AND_DF2_ROWS_DIFF)
