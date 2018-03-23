@@ -16,7 +16,7 @@ N.B : The project is under construction, more features and documentation will be
 	- Logging system (without file storing)
 	- Full SBT support 
 	
-***	N.B : No Maven support ***
+**N.B : No Maven support**
 
 
 # How to use MT4S
@@ -29,7 +29,7 @@ MT4S is thought to be used as an help for Spark developments. According to this,
 ***
 #### Compile from source 
 
-*** Requirements  ***
+**Requirements**
 
 - SBT 0.13+
 - Scala 2.11
