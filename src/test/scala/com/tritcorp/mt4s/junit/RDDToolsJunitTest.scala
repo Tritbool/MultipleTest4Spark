@@ -1,13 +1,12 @@
 package com.tritcorp.mt4s.junit
 
-import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.{DataFrame, Row}
-import org.junit.Test
-import com.tritcorp.mt4s.rddTools.RddTools._
-import com.tritcorp.mt4s.dfTools.DataframeTools._
-import org.apache.spark.sql.functions._
 import com.tritcorp.mt4s.Constants._
 import com.tritcorp.mt4s.rddTools.RddTools
+import com.tritcorp.mt4s.rddTools.RddTools._
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.functions._
+import org.apache.spark.sql.{DataFrame, Row}
+import org.junit.Test
 
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
