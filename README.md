@@ -27,7 +27,7 @@ MT4S is thought to be used as an help for Spark developments. According to this,
  I'd really recommend to download the framwork from source  and compile it on your system using sbt. Not only the sources will help you to have more details on the features available, but it will also be more simple to make use of it in your projects.
  
 ***
-#### Compile from source 
+### Compile from source 
 
 **Requirements**
 
