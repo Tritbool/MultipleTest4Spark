@@ -64,7 +64,7 @@ Add the following library dependency in the project's **build.sbt** file:
 "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 ```
 
-#Features
+#Features#
 
 ##Logger
 
