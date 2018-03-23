@@ -53,43 +53,43 @@ sbt clean package publishLocal
 >MT4S is now available in your local sbt repository.
 
 ***
-####Use it in a SBT project
+#### Use it in a SBT project
 Add the following library dependency in the project's **build.sbt** file:
 ```
 "com.tritcorp.exp" %% "mt4s" % "0.1" % "test"
 ```
-**N.B**: You may also need the followind dependency in some cases :
+** N.B **: You may also need the followind dependency in some cases :
 
 ```
 "com.typesafe.scala-logging" %% "scala-logging" % "3.7.2"
 ```
 
-#Features#
+# Features
 
-##Logger
+## Logger
 
 - Widely available
 - per class log level
 
-##DataFrame tools
+## DataFrame tools
 
 - load csv 
 - compare df
 - debugDF
 - implicit conversion
 
-##RDD tools
+## RDD tools
 
 - load any file
 - compare rdd
 - debugRDD
 - implicit conversion from rdd contaning complete csv data to a DataFrame
 
-##Utilities
+## Utilities
 
 - Folder exploration to load specific files into RDD's
 
-####About CSV
+#### About CSV
 
 > ***MT4S provides a way to load data from local csv files. However, by default,  it is only allowed to load data from files located in resources folder ***
 
@@ -117,13 +117,13 @@ project
 ```
 > From here the path to use for data files would merely be "/File_X.csv"
 
-#Tests
+# Tests
 
-##Unit Tests
+## Unit Tests
 
-##Spec Tests
+## Spec Tests
 
-##Features Tests
+## Features Tests
 
 ## LICENSE ##
 **This software is distributed under the GNU GPL license.**
