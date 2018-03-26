@@ -28,7 +28,7 @@ import org.junit.Test
 class RDDToolsJunitTest extends JunitTest {
 
   @Test
-  def testImplicitRddCsvToDfOK: Unit = {
+  def testImplicitRddCsvToDfOK(): Unit = {
     val res: RDD[String] = sc.parallelize(Seq(
       "Valeur verité,Sujet,Verbe,Determinant Possessif,Complément",
       "oui,je,suis,ton,pere",

@@ -22,6 +22,7 @@ import com.tritcorp.mt4s.logger.DebugMode.WARN
 import org.apache.spark.sql.functions._
 import org.junit.Test
 import com.tritcorp.mt4s.Constants._
+
 case class X(Reponse: String, Entite: String)
 
 class DFToolsJunitTest extends JunitTest {
@@ -62,8 +63,6 @@ class DFToolsJunitTest extends JunitTest {
     assert(df2.>=(df))
     assert(df.<=(df2))
     assert(df.>=(df2))
-
-
 
   }
 
