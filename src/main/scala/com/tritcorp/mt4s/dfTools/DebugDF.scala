@@ -185,11 +185,17 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
 
       val thisSortedCol = df.columns.sorted
       val thatSortedCol = that.columns.sorted
-
+      var schemasCheck = DF_EQUAL
       if (thisSortedCol.sameElements(thatSortedCol)) {
         logger.warn("Schemas contain the same columns : " + df.columns.mkString("[", ";", "]"))
       }
-
+      else {
+        logger.error("Schemas are different :")
+        logger.error("DF1 : " + thisSortedCol.mkString("[", ";", "]"))
+        logger.error("DF2 : " + thatSortedCol.mkString("[", ";", "]"))
+        schemasCheck = SCHEMAS_MATCH_ERR
+      }
+    if(schemasCheck == DF_EQUAL){
       if (!df.columns.sameElements(that.columns)) {
 
         logger.warn("Schemas are not ordered in the same way : ")
@@ -243,10 +249,37 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
         else UNKNOWN_ERR
       }
     }
+      else{
+      schemasCheck
+    }
+    }
   }
 
+  override def compareTo(that: DataFrame): Int ={
+    compare(that)
+  }
+
+  override def <(that: DataFrame): Boolean={
+    compare(that)==DF2_BIGGER_THAN_DF1
+  }
+
+  override def >(that: DataFrame): Boolean={
+    compare(that)==DF1_BIGGER_THAN_DF2
+  }
+
+  override def <=(that: DataFrame): Boolean={
+    val res =compare(that)
+    res==DF2_BIGGER_THAN_DF1 || res ==DF_EQUAL
+  }
+
+  override def >=(that: DataFrame): Boolean={
+    val res = compare(that)
+    res==DF1_BIGGER_THAN_DF2 || res ==DF_EQUAL
+  }
+
+
   /**
-    * equalsDF transforms compare to a boolean equality.
+    * == transforms compare to a boolean equality.
     *
     * @param that the df to compare to the embedded df
     * @return true if dfs are equal else false.

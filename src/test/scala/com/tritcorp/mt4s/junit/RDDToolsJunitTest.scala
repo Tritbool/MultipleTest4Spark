@@ -77,7 +77,9 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.equaldRDD(r1))
+    assert(r.equalsRDD(r1))
+    assert(r.>=(r1))
+    assert(r.<=(r1))
 
   }
 
@@ -136,6 +138,7 @@ class RDDToolsJunitTest extends JunitTest {
     )
 
     assert(r.compare(r1)==DF1_BIGGER_THAN_DF2)
+    assert(r.>(r1))
 
   }
 
@@ -166,6 +169,7 @@ class RDDToolsJunitTest extends JunitTest {
     )
 
     assert(r.compare(r1)==DF2_BIGGER_THAN_DF1)
+    assert(r.<(r1))
 
   }
 

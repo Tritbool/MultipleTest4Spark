@@ -58,6 +58,31 @@ class DFToolsJunitTest extends JunitTest {
 
     assert(df.equalsDF(df2))
     assert(df2.equalsDF(df))
+    assert(df2.<=(df))
+    assert(df2.>=(df))
+    assert(df.<=(df2))
+    assert(df.>=(df2))
+
+
+
+  }
+
+  @Test
+  def testSchemaSameSizeWrongCol() {
+    import sqlContext.implicits._
+
+    setLogLevel(WARN)
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
+    val df = rdd.toDF()
+
+
+    val columns = Array("Entite", "Pâté")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"))).toDF(columns: _*)
+
+    assert(df.compare(df2)==SCHEMAS_MATCH_ERR)
+    assert(df2.compare(df)==SCHEMAS_MATCH_ERR)
 
 
   }
@@ -78,6 +103,25 @@ class DFToolsJunitTest extends JunitTest {
 
     assert(df.compare(df2)==DF2_BIGGER_THAN_DF1)
     assert(df2.compare(df)==DF1_BIGGER_THAN_DF2)
+
+  }
+
+  @Test
+  def testDifferentSizeAssertable() {
+    import sqlContext.implicits._
+
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
+    val df = rdd.toDF()
+
+
+    val columns = Array("Entite", "Reponse")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"),
+      ("Enfant", "sussmoe"))).toDF(columns: _*)
+
+    assert(df.<(df2))
+    assert(df2.>(df))
 
   }
 

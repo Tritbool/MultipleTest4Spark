@@ -48,8 +48,30 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
   }
 
 
-  def equaldRDD(that:RDD[Row]):Boolean={
-    if(compare(that)==DF_EQUAL)true else false
+  def equalsRDD(that:RDD[Row]):Boolean={
+    compare(that)==DF_EQUAL
+  }
+
+  override def compareTo(that: RDD[Row]): Int ={
+    compare(that)
+  }
+
+  override def <(that: RDD[Row]): Boolean={
+    compare(that)==DF2_BIGGER_THAN_DF1
+  }
+
+  override def >(that: RDD[Row]): Boolean={
+    compare(that)==DF1_BIGGER_THAN_DF2
+  }
+
+  override def <=(that: RDD[Row]): Boolean={
+    val res =compare(that)
+    res==DF2_BIGGER_THAN_DF1 || res ==DF_EQUAL
+  }
+
+  override def >=(that: RDD[Row]): Boolean={
+    val res = compare(that)
+    res==DF1_BIGGER_THAN_DF2 || res ==DF_EQUAL
   }
 
   /**
