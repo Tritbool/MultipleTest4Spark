@@ -67,6 +67,47 @@ class DFToolsJunitTest extends JunitTest {
   }
 
   @Test
+  def testGeq() {
+    import sqlContext.implicits._
+
+    setLogLevel(WARN)
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
+    val df = rdd.toDF()
+
+
+    val columns = Array("Entite", "Reponse")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"))).toDF(columns: _*)
+
+    assert(df2.>=(df))
+
+    assert(df.>=(df2))
+
+  }
+
+  @Test
+  def testLeq() {
+    import sqlContext.implicits._
+
+    setLogLevel(WARN)
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme")))
+    val df = rdd.toDF()
+
+
+    val columns = Array("Entite", "Reponse")
+    val df2 = sc.parallelize(Seq(
+      ("Maitre", "oui"),
+      ("Femme", "non"))).toDF(columns: _*)
+
+    assert(df2.<=(df))
+
+    assert(df.<=(df2))
+
+
+  }
+
+  @Test
   def testSchemaSameSizeWrongCol() {
     import sqlContext.implicits._
 

@@ -45,6 +45,10 @@ object RddTools extends LazyLogging {
   }
 
 
+  def readRddLocal(file:String):RDD[String]={
+    sc.textFile(file).filter(_.nonEmpty)
+  }
+
   /**
     * Converts a RDD that contains csv info into a dataframe
     * - The first row of the rdd MUST be the csv header

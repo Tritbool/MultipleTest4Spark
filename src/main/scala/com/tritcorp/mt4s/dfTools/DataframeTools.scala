@@ -27,15 +27,17 @@ object DataframeTools extends LazyLogging {
   private val sqlContext: SQLContext = ss.sqlContext
   sc.setLogLevel("WARN")
 
+  /*TODO : ADD readRddLocal */
 
-  def readCsvLocal(path: String, delimiter: String = ";", encoding: String = "UTF-8"): Option[DataFrame] = {
+  def readCsvLocal(path: String, delimiter: String = ";", encoding: String = "UTF-8", inferSchema:String = "false", nullValue:String = ""): Option[DataFrame] = {
     logger.debug("Attempting to load csv file at : "+ getClass.getResource(path).toString())
     Option(ss.read
       .option("delimiter", delimiter)
-      .option("inferSchema", "true")
+      .option("inferSchema", inferSchema)
       .option("mode", "DROPMALFORMED")
       .option("header", "true")
       .option("encoding", encoding)
+      .option("nullValue",nullValue)
       .csv(getClass.getResource(path).toURI.toString))
   }
 

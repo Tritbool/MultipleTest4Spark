@@ -33,7 +33,7 @@ class RDDToolsJunitTest extends JunitTest {
       "Valeur verité,Sujet,Verbe,Determinant Possessif,Complément",
       "oui,je,suis,ton,pere",
       "non,tu,es,ma,soeur"))
-    RddTools.csvDelimiter=","
+    RddTools.csvDelimiter = ","
     val df = res.filter(col("Verbe").equalTo("suis"))
     assert(df.isInstanceOf[DataFrame])
     assert(df.count == 1)
@@ -43,7 +43,7 @@ class RDDToolsJunitTest extends JunitTest {
       "Valeur verité¤Sujet¤Verbe¤Determinant Possessif¤Complément",
       "oui¤je¤suis¤ton¤pere",
       "non¤tu¤es¤ma¤soeur"))
-    RddTools.csvDelimiter="¤"
+    RddTools.csvDelimiter = "¤"
     val df1 = res1.filter(col("Sujet").equalTo("tu"))
     assert(df1.isInstanceOf[DataFrame])
     assert(df1.count == 1)
@@ -84,6 +84,66 @@ class RDDToolsJunitTest extends JunitTest {
   }
 
   @Test
+  def testRddGeqOK() {
+
+
+    val r = sc.parallelize(
+      List(
+        Row.fromSeq(Seq("oui", "non")),
+        Row.fromSeq(Seq("Yes")),
+        Row.fromSeq(Seq(1.toString)),
+        Row.fromSeq(Seq("SUSS", "MOE")),
+        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
+        Row.fromSeq(Seq("Test", "Test1"))
+      )
+    )
+
+    val r1 = sc.parallelize(
+      List(
+        Row.fromSeq(Seq(1.toString)),
+        Row.fromSeq(Seq("oui", "non")),
+        Row.fromSeq(Seq("Yes")),
+        Row.fromSeq(Seq("SUSS", "MOE")),
+        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
+        Row.fromSeq(Seq("Test", "Test1"))
+      )
+    )
+
+    assert(r.>=(r1))
+
+  }
+
+  @Test
+  def testRddLeqOK() {
+
+
+    val r = sc.parallelize(
+      List(
+        Row.fromSeq(Seq("oui", "non")),
+        Row.fromSeq(Seq("Yes")),
+        Row.fromSeq(Seq(1.toString)),
+        Row.fromSeq(Seq("SUSS", "MOE")),
+        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
+        Row.fromSeq(Seq("Test", "Test1"))
+      )
+    )
+
+    val r1 = sc.parallelize(
+      List(
+        Row.fromSeq(Seq(1.toString)),
+        Row.fromSeq(Seq("oui", "non")),
+        Row.fromSeq(Seq("Yes")),
+        Row.fromSeq(Seq("SUSS", "MOE")),
+        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
+        Row.fromSeq(Seq("Test", "Test1"))
+      )
+    )
+
+    assert(r.<=(r1))
+
+  }
+
+  @Test
   def testRddCmpErr1() {
 
 
@@ -107,7 +167,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.compare(r1)==SCHEMAS_MATCH_ERR)
+    assert(r.compare(r1) == SCHEMAS_MATCH_ERR)
 
   }
 
@@ -137,7 +197,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.compare(r1)==DF1_BIGGER_THAN_DF2)
+    assert(r.compare(r1) == DF1_BIGGER_THAN_DF2)
     assert(r.>(r1))
 
   }
@@ -168,7 +228,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.compare(r1)==DF2_BIGGER_THAN_DF1)
+    assert(r.compare(r1) == DF2_BIGGER_THAN_DF1)
     assert(r.<(r1))
 
   }
@@ -200,7 +260,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.compare(r1)==DF1_AND_DF2_ROWS_DIFF)
+    assert(r.compare(r1) == DF1_AND_DF2_ROWS_DIFF)
 
   }
 
@@ -233,7 +293,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    assert(r.compare(r1)==DF1_AND_DF2_ROWS_DIFF)
+    assert(r.compare(r1) == DF1_AND_DF2_ROWS_DIFF)
 
   }
 
