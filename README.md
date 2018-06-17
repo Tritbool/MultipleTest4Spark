@@ -88,6 +88,8 @@ Add the following library dependency in the project's **build.sbt** file:
 ## Utilities
 
 - Folder exploration to load specific files into RDD's
+- Config object allows you to define the spark master, driver IP and driver host. Useful when yout firewall blocks random port access.
+
 
 #### About CSV
 

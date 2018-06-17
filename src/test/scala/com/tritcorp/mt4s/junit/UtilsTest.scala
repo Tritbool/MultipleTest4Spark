@@ -44,8 +44,8 @@ class UtilsTest extends JunitTest {
     val tree2 = Files.getAllFilesStartingWith(tree,"test").toArray
     logger.warn("tree: "+ tree2.length)
     assert(tree2.length==2)
-    assert(tree2(0).getName=="test1.data")
-    assert(tree2(1).getName=="test2.data")
+    assert(tree2(0).getName=="test1.data" || tree2(1).getName=="test1.data")
+    assert(tree2(0).getName=="test2.data" || tree2(1).getName=="test2.data")
 
   }
 
@@ -58,8 +58,8 @@ class UtilsTest extends JunitTest {
     val tree2 = Files.getAllFilesStartingWith(tree,"TeST",ignoreCase = true).toArray
     logger.warn("tree: "+ tree2.length)
     assert(tree2.length==2)
-    assert(tree2(0).getName=="test1.data")
-    assert(tree2(1).getName=="test2.data")
+    assert(tree2(0).getName=="test1.data" || tree2(1).getName=="test1.data")
+    assert(tree2(0).getName=="test2.data" || tree2(1).getName=="test2.data")
 
   }
 

@@ -15,13 +15,14 @@ package com.tritcorp.mt4s.dfTools
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
+import com.tritcorp.mt4s.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.sql.{DataFrame, SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
 
 object DataframeTools extends LazyLogging {
 
-  private val conf = new SparkConf().setAppName("DataframeTools").setMaster("local[*]")
+  private val conf = new SparkConf().setAppName("DataframeTools").setMaster(Config.MASTER).set("spark.local.ip",Config.IP).set("spark.driver.host",Config.HOST)
   private val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   private val sc: SparkContext = ss.sparkContext
   private val sqlContext: SQLContext = ss.sqlContext

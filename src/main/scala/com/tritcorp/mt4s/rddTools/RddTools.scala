@@ -1,5 +1,6 @@
 package com.tritcorp.mt4s.rddTools
 
+import com.tritcorp.mt4s.Config
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
@@ -24,7 +25,7 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext, SparkSession}
 */
 object RddTools extends LazyLogging {
 
-  private val conf = new SparkConf().setAppName("DataframeTools").setMaster("local[*]")
+  private val conf = new SparkConf().setAppName("DataframeTools").setMaster(Config.MASTER).set("spark.local.ip",Config.IP).set("spark.driver.host",Config.HOST)
   private val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   private val sc: SparkContext = ss.sparkContext
   private val sqlContext: SQLContext = ss.sqlContext

@@ -25,7 +25,7 @@ import org.apache.spark.{SparkConf, SparkContext}
   */
 trait TestBase extends LazyLogging {
 
-  val conf: SparkConf = new SparkConf().setAppName("SPARK TEST").setMaster("local[*]")
+  val conf: SparkConf = new SparkConf().setAppName("SPARK TEST").setMaster(Config.MASTER).set("spark.local.ip",Config.IP).set("spark.driver.host",Config.HOST)
   val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   val sc: SparkContext = ss.sparkContext
   val sqlContext: SQLContext = ss.sqlContext
