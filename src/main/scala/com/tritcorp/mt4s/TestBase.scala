@@ -15,7 +15,7 @@ package com.tritcorp.mt4s
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, LogLevel}
+import com.tritcorp.mt4s.logger.DebugMode.{INFO, LogLevel}
 import com.typesafe.scalalogging.LazyLogging
 import org.apache.spark.sql.{SQLContext, SparkSession}
 import org.apache.spark.{SparkConf, SparkContext}
@@ -29,7 +29,7 @@ trait TestBase extends LazyLogging {
   val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   val sc: SparkContext = ss.sparkContext
   val sqlContext: SQLContext = ss.sqlContext
-  var logLvl: LogLevel = DEBUG
+  var logLvl: LogLevel = INFO
   ConsoleHeader.printHeader()
 
 
