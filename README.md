@@ -1,5 +1,5 @@
 # MT4S - Mutliple Tests 4 Spark #
-
+[![Build Status](https://travis-ci.org/Tritbool/MT4S.svg?branch=master)](https://travis-ci.org/Tritbool/MT4S)
 ----------
 
 **MT4S is an under development framework that allows Scala/Spark developpers to rapidly instantiate tests classes for their Spark applications through Junit and/or ScalaTest.**
