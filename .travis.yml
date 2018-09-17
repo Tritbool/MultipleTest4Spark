@@ -1,11 +1,11 @@
 language: scala
 scala:
    - 2.11.12
-sbt_args: coverage
 addons:
   sonarcloud:
     organization: "tritbool-github"
     token: 
       secure : "KBwBXOspCsrWEMyjgrhlltPzO7iipjx+DSLSv4+w4ljL1hRhniAwBATY23rvN5It/97THsrKmpu9moAZ5ilNw75zp6UMZSFLSMpwSAmLBqQSqBBgDMRzs3pdR05v6S9JKbvbscDgvtaTeWqqRcRWY02yHqBQs8O7I/nzrHwfbuswA0XEUVf+WEAq5xIck59ElyW6GIdUBd5v8UJhCHrXcaLYwZtdkQ16IBcMmBb2TKpMP8DYhHeAIjlZGBv6l+F511sr5fA6KkGEU6i+35/eC9uYbeU4y8RehJk2kjzJd66Y5gqgHwZ9Pv16iPv3bw8jHC4CNb+h5rOWHIxMEIdibveNXydflkaqjn9rN2YuuinoI0KyhMCh6HBTibSDE/IQq4/+5w9vr++JzfDVQKKUuurASvkdfzF5IQ/7QAGHgSLDqwbivt+9WH5gdfDRBpGo6YQJhQSUHyEi7nSH+ojcYB0wyopW9xfa7doEzgiMSiyyQAxNiy+6/A5ENYo1HbWIxb/FvM/uObhJrWt0slN5UyqRmu6MfJXfPXfWTpi81jqimBibzsCcwwSsFR6ETcWLwVwZPQ6A5L+SB/s99D3odGLLiswQEv1SGHRg1BDCm+x+kCYxqd/kBu0Yoy5iTPOofpSL17i2RK+i91Z5/ex1WtLkkIznjfPOB00qpR2n+LM="
 script:
+  - sbt clean coverage test coverageReport
   - sonar-scanner
