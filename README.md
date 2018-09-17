@@ -1,5 +1,13 @@
 # MT4S - Mutliple Tests 4 Spark #
 [![Build Status](https://travis-ci.org/Tritbool/MT4S.svg?branch=master)](https://travis-ci.org/Tritbool/MT4S)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=alert_status)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=bugs)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=code_smells)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=sqale_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=reliability_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=security_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=sqale_index)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=vulnerabilities)
 ----------
 
 **MT4S is an under development framework that allows Scala/Spark developpers to rapidly instantiate tests classes for their Spark applications through Junit and/or ScalaTest.**
