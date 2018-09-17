@@ -1,6 +1,7 @@
 language: scala
 scala:
    - 2.11.12
+sbt_args: clean coverage test coverageReport
 addons:
   sonarcloud:
     organization: "tritbool-github"
