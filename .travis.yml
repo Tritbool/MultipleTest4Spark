@@ -1,3 +1,9 @@
 language: scala
 scala:
    - 2.11.12
+addons:
+  sonarcloud:
+    organization: "tritbool-github"
+    token: 7e311b55654a5a205feb97a70a3707fbfd3e6d5a
+script:
+  - sonar-scanner
