@@ -42,6 +42,11 @@ object DataframeTools extends LazyLogging {
       .csv(getClass.getResource(path).toURI.toString))
   }
 
+  /**
+    * Allows implicit conversion of DataFrame to DebugDF
+    * @param df the DataFrame to test
+    * @return df encapsulated in a new DebugDF 
+    */
   implicit def df2DebugDF(df:DataFrame):DebugDF={
     new DebugDF(df)
   }

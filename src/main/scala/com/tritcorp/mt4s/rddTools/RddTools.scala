@@ -44,9 +44,17 @@ object RddTools extends LazyLogging {
     new DebugRDD(rdd)
   }
 
+  implicit def rddString2rddRow(rdd:RDD[String]):RDD[Row]={
+    rdd.map(r=>Row.fromSeq(Seq(r)))
+  }
 
+  /**
+    * Loads a file from
+    * @param file
+    * @return
+    */
   def readRddLocal(file:String):RDD[String]={
-    sc.textFile(file).filter(_.nonEmpty)
+    sc.textFile(getClass.getResource(file).toString()).filter(_.nonEmpty)
   }
 
   /**

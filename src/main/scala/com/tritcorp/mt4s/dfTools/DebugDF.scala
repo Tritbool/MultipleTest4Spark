@@ -140,6 +140,7 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     * Show the embedded dataframe in the logger at debug level
     *
     * @param numRows the number of rows to show
+    * @param debug set to true if you want to have the logger in debug mode for printing
     */
   def showDebug(numRows: Int = 20, debug:Boolean = false): Unit = {
     if(debug){

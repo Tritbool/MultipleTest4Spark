@@ -1,4 +1,5 @@
 package com.tritcorp.mt4s.scalaTest
+
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
@@ -20,8 +21,8 @@ package com.tritcorp.mt4s.scalaTest
 import com.tritcorp.mt4s.rddTools.RddTools
 import com.tritcorp.mt4s.rddTools.RddTools._
 import org.apache.spark.rdd.RDD
-import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.functions.col
+import org.apache.spark.sql.{DataFrame, Row}
 
 class RDDToolsFeatureSpecExample extends FeatureSpecTest {
 
@@ -52,4 +53,25 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
       assert(df1.count == 1)
     }
   }
+
+  info("as a spark developer")
+  info("I want to load a file from my resources folder")
+
+  feature("Load a file from resources and put its content into a RDD") {
+    scenario("loading a file, verify it has been loaded") {
+
+      val expected: RDD[Row] = sc.parallelize(
+        List(
+          Row.fromSeq(Seq("A B C 23 FG 42 FDP |e")),
+          Row.fromSeq(Seq("1 2 3 4"))
+        ))
+
+      RddTools.csvDelimiter=" "
+      val loaded:RDD[String] = RddTools.readRddLocal("/rddLoad.txt")
+
+      assert(expected.equalsRDD(loaded))
+
+    }
+  }
+
 }
