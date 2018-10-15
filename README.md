@@ -130,7 +130,30 @@ project
 # Tests
 
 ## Unit Tests
+```scala
 
+import com.tritcorp.mt4s.logger.DebugMode._
+import com.tritcorp.mt4s.dfTools.DataframeTools._
+import com.tritcorp.mt4s.dfTools.DataframeTools
+import com.tritcorp.mt4s.junit.JunitTest
+import org.junit.Test
+
+class TestingScalatest extends JunitTest{
+
+// Set the log level to the following : DEBUG, INFO, WARN or ERROR
+// Default is INFO
+setLogLevel(WARN)
+
+  @Test
+  def myTest() ={
+    val toTest:DataFrame = somecode.that.outputs.a.dataframe()
+
+    //load a file from the resources folder
+    val expectedResult:DataFrame = DataframeTools.readCsvLocal("/expected.csv",delimiter=",",encoding="UTF-8",inferSchema = "true",nullValue = "NULL").orNull
+    assert(toTest.equalsDF(expectedResult))
+  }
+}
+```
 ## Spec Tests
 ```scala
 
@@ -145,17 +168,13 @@ class TestingScalatest extends FlatSpecTest{
 // Default is INFO
 setLogLevel(WARN)
 
-"datasets" must "be identical" in {
+  "datasets" must "be identical" in {
+    val toTest:DataFrame = somecode.that.outputs.a.dataframe()
 
-val toTest:DataFrame = somecode.that.outputs.a.dataframe()
-
-//load a file from the resources folder
-val expectedResult:DataFrame = DataframeTools.readCsvLocal("/expected.csv",delimiter=",",encoding="UTF-8",inferSchema = "true",nullValue = "NULL").orNull
-
-assert(toTest.equalsDF(expectedResult))
-
-}
-
+    //load a file from the resources folder
+    val expectedResult:DataFrame = DataframeTools.readCsvLocal("/expected.csv",delimiter=",",encoding="UTF-8",inferSchema = "true",nullValue = "NULL").orNull
+    assert(toTest.equalsDF(expectedResult))
+  }
 }
 ```
 ## Features Tests
