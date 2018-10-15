@@ -19,7 +19,7 @@ object ConsoleHeader {
 
   private var headerShown: Boolean = false;
 
-  private final val VERSION = "0.1"
+  private final val VERSION = "1.0"
   private final val LICENSE = "LICENSE GNU GPL 3.0"
 
   def printHeader(): Unit = {

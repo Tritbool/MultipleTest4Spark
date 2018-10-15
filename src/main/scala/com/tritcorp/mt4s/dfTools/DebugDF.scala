@@ -159,12 +159,12 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     *
     * @param that the DataFrame to compare with the embedded DataFrame
     * @return
-    * 0 if dfs are semantically equal
-    * 1 if dfs schemas don't match
-    * 2 if the embedded df has more rows than that
-    * 3 if that has more rows than the embedded df
-    * 5 if both df have rows that don't exist in the other
-    * 4 if an unknown error occurred
+    * 0 (Constants.DF_EQUAL) if dfs are semantically equal
+    * 1 (Constants.SCHEMAS_MATCH_ERR) if dfs schemas don't match
+    * 2 (Constants.DF1_BIGGER_THAN_DF2) if the embedded df has more rows than that
+    * 3 (Constants.DF2_BIGGER_THAN_DF1) if that has more rows than the embedded df
+    * 5 (Constants.DF1_AND_DF2_ROWS_DIFF) if both df have rows that don't exist in the other
+    * 4 (Constants.UNKNOWN_ERR) if an unknown error occurred
     */
   override def compare(that: DataFrame): Int = {
 
@@ -279,7 +279,7 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
 
 
   /**
-    * == transforms compare to a boolean equality.
+    * transforms DebugDG.compare's result to a boolean value
     *
     * @param that the df to compare to the embedded df
     * @return true if dfs are equal else false.

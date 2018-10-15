@@ -35,9 +35,8 @@ object RddTools extends LazyLogging {
     */
   var csvDelimiter:String =";"
 
-
   /**
-    * Implicitly converts a RDD to a DebugRdd
+    * Implicitly converts a RDD of Row to a DebugRdd
     * @param rdd
     * @return
     */

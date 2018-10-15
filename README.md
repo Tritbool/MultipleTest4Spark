@@ -132,7 +132,32 @@ project
 ## Unit Tests
 
 ## Spec Tests
+```scala
 
+import com.tritcorp.mt4s.logger.DebugMode._
+import com.tritcorp.mt4s.dfTools.DataframeTools._
+import com.tritcorp.mt4s.dfTools.DataframeTools
+import com.tritcorp.mt4s.scalaTest.FlatSpecTest
+
+class TestingScalatest extends FlatSpecTest{
+
+// Set the log level to the following : DEBUG, INFO, WARN or ERROR
+// Default is INFO
+setLogLevel(WARN)
+
+"datasets" must "be identical" in {
+
+val toTest:DataFrame = somecode.that.outputs.a.dataframe()
+
+//load a file from the resources folder
+val expectedResult:DataFrame = DataframeTools.readCsvLocal("/expected.csv",delimiter=",",encoding="UTF-8",inferSchema = "true",nullValue = "NULL").orNull
+
+assert(toTest.equalsDF(expectedResult))
+
+}
+
+}
+```
 ## Features Tests
 
 ## LICENSE ##
