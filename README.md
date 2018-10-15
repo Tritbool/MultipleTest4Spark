@@ -12,8 +12,6 @@
 
 **MT4S is an under development framework that allows Scala/Spark developpers to rapidly instantiate tests classes for their Spark applications through Junit and/or ScalaTest.**
 
-N.B : The project is under construction, more features and documentation will be added with time. jar packages will be available as soon as a first stable version will be released
-
 ## It provides: ##
 
 	- Scalatest Spark ready classes (Not all types implemented yet)
