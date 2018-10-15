@@ -17,11 +17,14 @@ N.B : The project is under construction, more features and documentation will be
 ## It provides: ##
 
 	- Scalatest Spark ready classes (Not all types implemented yet)
-	- Simple CSV load methods.
+	- Simple CSV load 
+	- Simple TextFile load
 	- Junit Spark ready classes
 	- DatFrame comparison system
 	- RDD Comparison system
 	- Logging system (without file storing)
+	- Implicit DataFrame to DebugDF conversion
+	- Implicit RDD to DataFrame and RDD[String] to RDD[Row] conversions
 	- Full SBT support 
 	
 **N.B : No Maven support**
@@ -93,9 +96,49 @@ logger.error("Your message")
 // ...
 
 ```
+
+## Resources
+
+#### About files loading
+
+> ***MT4S provides a way to load data from local files. However, by default,  it is only allowed to load data from files located in resources folder ***
+
+```
+project
+|
+│   README.md
+│   LICENSE.txt    
+│
+└───src
+│   │
+│   |───main
+│   |   │   App.scala
+│   |   └───resources
+│   |   │   ...
+|   |
+|   |
+│   └───test
+│   |   │   AppTest.scala
+│   |   └───resources
+│   |   │   |    File_1.txt
+│   |   │   |    File_2.csv
+│   |   │   |    ...
+
+```
+> From here the path to use for data files would merely be "/File_X.csv"
+
 ## DataFrame tools
 
-- load csv from resources
+* ##### to access tools
+```scala
+import com.tritcorp.mt4s.dfTools.DataframeTools
+```
+* ##### to access implicits
+```scala
+import com.tritcorp.mt4s.dfTools.DataframeTools._
+```
+
+- load csv file from resources folder
 
 **resources file is set as root**
 ```scala
@@ -117,6 +160,40 @@ def readCsvLocal(path: String, delimiter: String = ";", encoding: String = "UTF-
 readCsvLocal("/myFile.csv")
 
 ```
+
+- DebugDF
+
+A Spark DataFrame overload, offering debug features :
+
+```scala
+/**
+  * DebugDF encapsulates a DataFrame and adds logging and debugging tools to it.
+  *
+  * @param df the DataFrame to debug
+  */
+class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame]{
+
+  /**
+    * Show the embedded dataframe in the logger at debug level
+    *
+    * @param numRows the number of rows to show
+    * @param debug set to true if you want to have the logger in debug mode for printing
+    */
+  def showDebug(numRows: Int = 20, debug:Boolean = false)
+  
+  def compareTo(that: DataFrame): Int 
+  
+  def <(that: DataFrame): Boolean
+  
+  def >(that: DataFrame): Boolean
+  
+  def <=(that: DataFrame): Boolean
+  
+  def >=(that: DataFrame): Boolean
+    ...
+  } 
+```
+
 - compare df
 ```scala
 
@@ -132,26 +209,11 @@ readCsvLocal("/myFile.csv")
     * 5 (Constants.DF1_AND_DF2_ROWS_DIFF) if both df have rows that don't exist in the other
     * 4 (Constants.UNKNOWN_ERR) if an unknown error occurred
     */
-  override def compare(that: DataFrame): Int 
-```
-
-- debugDF
-
-A Spark DataFrame overload, offering debug features like :
-
-```scala
-  /**
-    * Show the embedded dataframe in the logger at debug level
-    *
-    * @param numRows the number of rows to show
-    * @param debug set to true if you want to have the logger in debug mode for printing
-    */
-  def showDebug(numRows: Int = 20, debug:Boolean = false)
+  def compare(that: DataFrame): Int 
 ```
 
 - implicit conversion
 ```scala
-import com.tritcorp.mt4s.dfTools.DataframeTools.df2DebugDF 
 
 /**
     * Allows implicit conversion of DataFrame to DebugDF
@@ -174,54 +236,182 @@ import com.tritcorp.mt4s.dfTools.DataframeTools.df2DebugDF
   ```
 ## RDD tools
 
-- load any file from resources
+* ##### to access tools
+```scala
+import com.tritcorp.mt4s.rddTools.RddTools
+```
+* ##### to access implicits
+```scala
+ import com.tritcorp.mt4s.rddTools.RddTools._
+```
+
+
+- load any file from resources folder
+```scala
+/**
+    * Loads a file from the resources folder
+    * @param file The file's path in the resources folder
+    * @return a RDD[String] with the file's content
+    */
+  def readRddLocal(file:String):RDD[String]
+```
+
  ```scala
- /* Example */
- val df:DataFrame
- 
- //With implicit, you can directly call DebugDF functionalities from a standard DataFrame
- df.showDebug()
- df.compare(anotherDf)
- //...
+
   ```
-- compare rdd
+  
 - debugRDD
+
+A Spark RDD overload, offering debug features :
+
+```scala
+class DebugRDD(rdd: RDD[Row]) extends DebugDatasetBase with Ordered[RDD[Row]]{
+  /**
+    * Compares the embedded rdd with the rdd that is passed as parameter
+    *
+    * @see com.tritcorp.mt4s.dfTools.DebugDf.compare
+    * @param that the rdd to compare with the embedded rdd
+    * @return
+    * 0 if rdds are semantically equal
+    * 1 if rdds schemas don't match
+    * 2 if the embedded rdd has more rows than that
+    * 3 if that has more rows than the embedded rdd
+    * 5 if both rdd have rows that don't exist in the other
+    * 4 if an unknown error occurred
+    */
+   def compare(that: RDD[Row]): Int
+  
+   def equalsRDD(that:RDD[Row]):Boolean
+  
+   def compareTo(that: RDD[Row]): Int
+  
+   def <(that: RDD[Row]): Boolean
+   
+   def >(that: RDD[Row]): Boolean
+   
+   def <=(that: RDD[Row]): Boolean
+   
+   def >=(that: RDD[Row]): Boolean
+   
+   /**
+       * Prepares a RDD for comparison
+       * In order to do so, a schema is infered from the longest row of the RDD, then each smaller row is filled with phony data.
+       * for example, a rdd like
+       * 
+       * A B C D 
+       * 1 2
+       * x y z
+       * 
+       * would become the following DataFrame
+       * 
+       * +-----+-----+-----+-----+
+       * | c_0 | c_1 | c_2 | c_3 |
+       * +-----+-----+-----+-----+
+       * |  A  |  B  |  C  |  D  |
+       * |  1  |  2  | n/a | n/a |
+       * |  x  |  y  |  z  | n/a |
+       * +-----+-----+-----+-----+
+       *
+       * 
+        * @param rddP A RDD[Row] to prepare
+       * @return a DataFrame infered from rddP
+       **/
+     private def prepareRdd(rddP: RDD[Row]): DataFrame 
+}
+```
+- compare RDD[Row]
+
+To compare RDD, they are transformed into DataFrame.
+
+In order to do so, a schema is infered from the longest row of the RDD, then each smaller row is filled with phony data.
+for example, a rdd like
+```
+A B C D 
+1 2
+x y z
+```
+would become the following DataFrame
+```
++-----+-----+-----+-----+
+| c_0 | c_1 | c_2 | c_3 |
++-----+-----+-----+-----+
+|  A  |  B  |  C  |  D  |
+|  1  |  2  | n/a | n/a |
+|  x  |  y  |  z  | n/a |
++-----+-----+-----+-----+
+```
+Then it is easy to use **DebugDF.compare** to compare RDDs
+
+- Implicit RDD[String] to RDD[Row] conversion
+
+Allows to load a text file then compare it easily with a RDD[Row]
+
+**Usage**
+
+``` scala
+val expected:RDD[Row]=...
+val loaded:RDD[String] = RddTools.readRddLocal("/rddLoad.txt")
+
+//Implicit conversion of loaded from RDD[String] to RDD[Row]
+assert(expected.equalsRDD(loaded))
+```
+
 - implicit conversion from rdd contaning complete csv data to a DataFrame
+
+``` scala
+/**
+    * Converts a RDD that contains csv info into a dataframe
+    * - The first row of the rdd MUST be the csv header
+    * - The rdd rows must all have the same length
+    * @param rdd the rdd to convert
+    * @return the dataframe from the rdd
+    */
+  implicit def rddCsvToDF(rdd: RDD[String]): DataFrame
+```
+**Usage**
+
+``` scala
+
+//RddTools.csvDelimiter must be changed according to the delimiter of your csv data
+
+RddTools.csvDelimiter=","
+
+
+// Both creating a RDD manually or loading a file work
+
+val res: RDD[String] = sc.parallelize(Seq(
+        "Name,surname,age",
+        "Maria,Doe,41",
+        "John,Nguyen,23"))
+
+val res:RDD[String]=RddTools.readRddFree("/path/to/nameSurnameAge.txt)
+
+res.show()
+
+/** OUTPUT =
+  * +-------+---------+-----+
+  * | name  | surname | age |
+  * +-------+---------+-----+
+  * | Maria |   Doe   |  41 |
+  * |  Joe  | Nguyen  |  23 |
+  * +-------+---------+-----+
+  */
+
+```
 
 ## Utilities
 
-- Folder exploration to load specific files into RDD's
+- Folder exploration to load files that are not from resources folder into RDD's
 - Config object allows you to define the spark master, driver IP and driver host. Useful when yout firewall blocks random port access.
+```scala
+object Config {
 
+  var MASTER="local[8]"
+  var IP="127.0.0.1"
+  var HOST="127.0.0.1"
 
-#### About CSV
-
-> ***MT4S provides a way to load data from local csv files. However, by default,  it is only allowed to load data from files located in resources folder ***
-
+}
 ```
-project
-|
-│   README.md
-│   LICENSE.txt    
-│
-└───src
-│   │
-│   |───main
-│   |   │   App.scala
-│   |   └───resources
-│   |   │   ...
-|   |
-|   |
-│   └───test
-│   |   │   AppTest.scala
-│   |   └───resources
-│   |   │   |    File_1.csv
-│   |   │   |    File_2.csv
-│   |   │   |    ...
-
-```
-> From here the path to use for data files would merely be "/File_X.csv"
-
 # Tests examples
 
 ## Unit Tests
@@ -252,10 +442,12 @@ setLogLevel(WARN)
 ## Spec Tests
 ```scala
 
+import com.tritcorp.mt4s.scalaTest.FlatSpecTest
+
 import com.tritcorp.mt4s.logger.DebugMode._
 import com.tritcorp.mt4s.dfTools.DataframeTools._
 import com.tritcorp.mt4s.dfTools.DataframeTools
-import com.tritcorp.mt4s.scalaTest.FlatSpecTest
+
 import com.tritcorp.mt4s.Constants._
 import org.junit.Assert._
 
@@ -284,7 +476,36 @@ setLogLevel(WARN)
 }
 ```
 ## Features Tests
+```scala
+import com.tritcorp.mt4s.scalaTest.FeatureSpecTest
 
+import com.tritcorp.mt4s.rddTools.RddTools
+import com.tritcorp.mt4s.rddTools.RddTools._
+
+import org.apache.spark.rdd.RDD
+import org.apache.spark.sql.{DataFrame, Row}
+
+class RDDToolsFeatureSpecExample extends FeatureSpecTest {
+info("as a spark developer")
+  info("I want to load a file from any folder")
+
+  feature("Load a file and put its content into a RDD") {
+    scenario("loading a file, verify it has been loaded") {
+
+      val expected: RDD[Row] = sc.parallelize(
+        List(
+          Row.fromSeq(Seq("A B C 23 FG 42 FDP |e")),
+          Row.fromSeq(Seq("1 2 3 4"))
+        ))
+
+      val loaded:RDD[String] = RddTools.readRddLocal("/path/to/rddLoad.txt")
+
+      assert(expected.equalsRDD(loaded))
+
+    }
+  }
+}
+```
 ## LICENSE ##
 **This software is distributed under the GNU GPL license.**
 [https://www.gnu.org/licenses/](https://www.gnu.org/licenses/ "https://www.gnu.org/licenses/")

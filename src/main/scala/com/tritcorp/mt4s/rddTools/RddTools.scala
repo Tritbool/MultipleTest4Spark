@@ -49,12 +49,21 @@ object RddTools extends LazyLogging {
   }
 
   /**
-    * Loads a file from
-    * @param file
-    * @return
+    * Loads a file from the resources folder
+    * @param file The file's path in the resources folder
+    * @return a RDD[String] with the file's content
     */
   def readRddLocal(file:String):RDD[String]={
     sc.textFile(getClass.getResource(file).toString()).filter(_.nonEmpty)
+  }
+
+  /**
+    * Loads a file from any folder
+    * @param file The file's path
+    * @return a RDD[String] with the file's content
+    */
+  def readRddFree(file:String):RDD[String]={
+    sc.textFile(file).filter(_.nonEmpty)
   }
 
   /**

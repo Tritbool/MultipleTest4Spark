@@ -66,7 +66,6 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
           Row.fromSeq(Seq("1 2 3 4"))
         ))
 
-      RddTools.csvDelimiter=" "
       val loaded:RDD[String] = RddTools.readRddLocal("/rddLoad.txt")
 
       assert(expected.equalsRDD(loaded))

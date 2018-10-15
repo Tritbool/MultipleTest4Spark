@@ -23,7 +23,8 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 *
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/ class DebugRDD(rdd: RDD[Row]) extends DebugDatasetBase with Ordered[RDD[Row]] {
+*/
+class DebugRDD(rdd: RDD[Row]) extends DebugDatasetBase with Ordered[RDD[Row]] {
 
   sc = rdd.sparkContext
   sqlContext = SQLContext.getOrCreate(sc)
@@ -34,6 +35,7 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
   /**
     * Compares the embedded rdd with the rdd that is passed as parameter
     *
+    * @see com.tritcorp.mt4s.dfTools.DebugDf.compare
     * @param that the rdd to compare with the embedded rdd
     * @return
     * 0 if rdds are semantically equal
@@ -75,10 +77,28 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
   }
 
   /**
+    * Prepares a RDD for comparison
+    * In order to do so, a schema is infered from the longest row of the RDD, then each smaller row is filled with phony data.
+    * for example, a rdd like
     *
-     * @param rddP
-    * @return
-    */
+    * A B C D
+    * 1 2
+    * x y z
+    *
+    * would become the following DataFrame
+    *
+    * +-----+-----+-----+-----+
+    * | c_0 | c_1 | c_2 | c_3 |
+    * +-----+-----+-----+-----+
+    * |  A  |  B  |  C  |  D  |
+    * |  1  |  2  | n/a | n/a |
+    * |  x  |  y  |  z  | n/a |
+    * +-----+-----+-----+-----+
+    *
+    *
+     * @param rddP A RDD[Row] to prepare
+    * @return a DataFrame infered from rddP
+    **/
   private def prepareRdd(rddP: RDD[Row]): DataFrame = {
     val maxSize = rddP.map(row => row.size).reduce((a, b) => if (a > b) a else b)
 
