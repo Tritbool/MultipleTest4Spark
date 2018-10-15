@@ -22,7 +22,6 @@ import java.io.File
 import com.tritcorp.mt4s.utils.Files
 import org.junit.Test
 
-
 class UtilsTest extends JunitTest {
 
   @Test

@@ -161,6 +161,8 @@ import com.tritcorp.mt4s.logger.DebugMode._
 import com.tritcorp.mt4s.dfTools.DataframeTools._
 import com.tritcorp.mt4s.dfTools.DataframeTools
 import com.tritcorp.mt4s.scalaTest.FlatSpecTest
+import com.tritcorp.mt4s.Constants._
+import org.junit.Assert._
 
 class TestingScalatest extends FlatSpecTest{
 
@@ -168,12 +170,21 @@ class TestingScalatest extends FlatSpecTest{
 // Default is INFO
 setLogLevel(WARN)
 
-  "datasets" must "be identical" in {
+  "Datasets" must "be identical" in {
     val toTest:DataFrame = somecode.that.outputs.a.dataframe()
 
     //load a file from the resources folder
     val expectedResult:DataFrame = DataframeTools.readCsvLocal("/expected.csv",delimiter=",",encoding="UTF-8",inferSchema = "true",nullValue = "NULL").orNull
     assert(toTest.equalsDF(expectedResult))
+  }
+  
+  "Generated dataset" should "have less rows than expected" in{
+    val toTest:DataFrame = somecode.that.outputs.a.dataframe()
+    val expected:DataFrame = somecode.that.outputs.another.dataframe()
+    
+    //see Constants FILE for more info
+    //see DebugDF.compare for doc
+    assertEquals(DF2_BIGGER_THAN_DF1,toTest.compare(expected))
   }
 }
 ```
