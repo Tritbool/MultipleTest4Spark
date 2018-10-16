@@ -18,7 +18,6 @@ package com.tritcorp.mt4s.dfTools
 */
 
 
-
 import java.sql.{Date, Timestamp}
 
 import com.tritcorp.mt4s.DebugDatasetBase
@@ -142,14 +141,14 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     * Show the embedded dataframe in the logger at debug level
     *
     * @param numRows the number of rows to show
-    * @param debug set to true if you want to have the logger in debug mode for printing
+    * @param debug   set to true if you want to have the logger in debug mode for printing
     */
-  def showDebug(numRows: Int = 20, debug:Boolean = false): Unit = {
-    if(debug){
+  def showDebug(numRows: Int = 20, debug: Boolean = false): Unit = {
+    if (debug) {
       setLogLevel(DEBUG)
       logger.debug(showString(df, numRows, numRows))
     }
-    else{
+    else {
       setLogLevel(INFO)
       logger.info(showString(df, numRows, numRows))
     }
@@ -177,12 +176,14 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     df.cache()
     thatReordered.cache()
 
+    var result:Int=0
+
     // Compare schema sizes.
     if (df.schema.lengthCompare(that.schema.size) != 0) {
       logger.error("Schemas sizes are different :")
       logger.error("DF1 : " + df.columns.mkString("[", ";", "]"))
       logger.error("DF2 : " + that.columns.mkString("[", ";", "]"))
-      SCHEMAS_MATCH_ERR
+      result=SCHEMAS_MATCH_ERR
     }
     else {
 
@@ -198,86 +199,89 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
         logger.error("DF2 : " + thatSortedCol.mkString("[", ";", "]"))
         schemasCheck = SCHEMAS_MATCH_ERR
       }
-    if(schemasCheck == DF_EQUAL){
-      if (!df.columns.sameElements(that.columns)) {
+      if (schemasCheck == DF_EQUAL) {
+        if (!df.columns.sameElements(that.columns)) {
 
-        logger.warn("Schemas are not ordered in the same way : ")
-        logger.warn("DF1 : " + df.columns.mkString("[", ";", "]"))
-        logger.warn("DF2 : " + that.columns.mkString("[", ";", "]"))
+          logger.warn("Schemas are not ordered in the same way : ")
+          logger.warn("DF1 : " + df.columns.mkString("[", ";", "]"))
+          logger.warn("DF2 : " + that.columns.mkString("[", ";", "]"))
 
-        thatReordered = that.select(df.columns.head, df.columns.tail: _*)
-      }
-
-      val countDf1 = df.count()
-      val countDf2 = that.count()
-      val diff1 = df.except(thatReordered)
-      val diff1Count = diff1.count
-
-      val diff2 = thatReordered.except(df)
-      val diff2Count = diff2.count
-
-      if (countDf1 != countDf2) {
-        logger.error("Dataframes have different size :")
-        logger.error("DF1 : " + countDf1 + "rows")
-        logger.error("DF2 : " + countDf2 + "rows")
-
-      }
-      if (diff1Count > 0 || diff2Count > 0) {
-
-        var df1SupDf2 = DF_EQUAL
-        var df2SupDf1 = DF_EQUAL
-
-        if (diff1Count > 0) {
-          logger.error("DF1 has " + diff1Count + " line(s) that don't exist in DF2")
-          logger.error(showString(diff1, ROWS_TO_SHOW, ROWS_TO_SHOW))
-          df1SupDf2 = DF1_BIGGER_THAN_DF2
+          thatReordered = that.select(df.columns.head, df.columns.tail: _*)
         }
 
+        val countDf1 = df.count()
+        val countDf2 = that.count()
+        val diff1 = df.except(thatReordered)
+        val diff1Count = diff1.count
 
-        if (diff2Count > 0) {
-          logger.error("DF2 has " + diff2Count + " line(s) that don't exist in DF1")
-          logger.error(showString(diff2, ROWS_TO_SHOW))
-          df2SupDf1 = DF2_BIGGER_THAN_DF1
+        val diff2 = thatReordered.except(df)
+        val diff2Count = diff2.count
+
+        if (countDf1 != countDf2) {
+          logger.error("Dataframes have different size :")
+          logger.error("DF1 : " + countDf1 + "rows")
+          logger.error("DF2 : " + countDf2 + "rows")
+
         }
+        if (diff1Count > 0 || diff2Count > 0) {
 
-        df1SupDf2 + df2SupDf1
+          var df1SupDf2 = DF_EQUAL
+          var df2SupDf1 = DF_EQUAL
 
-      } else {
-        val equality = df.union(thatReordered).except(df.intersect(thatReordered))
+          if (diff1Count > 0) {
+            logger.error("DF1 has " + diff1Count + " line(s) that don't exist in DF2")
+            logger.error(showString(diff1, ROWS_TO_SHOW, ROWS_TO_SHOW))
+            df1SupDf2 = DF1_BIGGER_THAN_DF2
+          }
 
-        if (equality.count == 0) {
-          logger.warn("Dataframes contents are identical")
-          DF_EQUAL
+
+          if (diff2Count > 0) {
+            logger.error("DF2 has " + diff2Count + " line(s) that don't exist in DF1")
+            logger.error(showString(diff2, ROWS_TO_SHOW))
+            df2SupDf1 = DF2_BIGGER_THAN_DF1
+          }
+
+          result=df1SupDf2 + df2SupDf1
+
+        } else {
+          val equality = df.union(thatReordered).except(df.intersect(thatReordered))
+
+          if (equality.count == 0) {
+            logger.warn("Dataframes contents are identical")
+            result=DF_EQUAL
+          }
+          else {result=UNKNOWN_ERR}
         }
-        else UNKNOWN_ERR
+      }
+      else {
+        result=schemasCheck
       }
     }
-      else{
-      schemasCheck
-    }
-    }
+    df.unpersist()
+    thatReordered.unpersist()
+    result
   }
 
-  override def compareTo(that: DataFrame): Int ={
+  override def compareTo(that: DataFrame): Int = {
     compare(that)
   }
 
-  override def <(that: DataFrame): Boolean={
-    compare(that)==DF2_BIGGER_THAN_DF1
+  override def <(that: DataFrame): Boolean = {
+    compare(that) == DF2_BIGGER_THAN_DF1
   }
 
-  override def >(that: DataFrame): Boolean={
-    compare(that)==DF1_BIGGER_THAN_DF2
+  override def >(that: DataFrame): Boolean = {
+    compare(that) == DF1_BIGGER_THAN_DF2
   }
 
-  override def <=(that: DataFrame): Boolean={
-    val res =compare(that)
-    res==DF2_BIGGER_THAN_DF1 || res ==DF_EQUAL
-  }
-
-  override def >=(that: DataFrame): Boolean={
+  override def <=(that: DataFrame): Boolean = {
     val res = compare(that)
-    res==DF1_BIGGER_THAN_DF2 || res ==DF_EQUAL
+    res == DF2_BIGGER_THAN_DF1 || res == DF_EQUAL
+  }
+
+  override def >=(that: DataFrame): Boolean = {
+    val res = compare(that)
+    res == DF1_BIGGER_THAN_DF2 || res == DF_EQUAL
   }
 
 
