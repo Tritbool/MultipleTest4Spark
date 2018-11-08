@@ -1,5 +1,5 @@
 # MT4S - Mutliple Tests 4 Spark #
-[![Build Status](https://travis-ci.org/Tritbool/MT4S.svg?branch=master)](https://travis-ci.org/Tritbool/MT4S)
+[![Build Status](https://travis-ci.org/Tritbool/MultipleTest4Spark.svg?branch=master)](https://travis-ci.org/Tritbool/MT4S)
 [![codecov](https://codecov.io/gh/Tritbool/MT4S/branch/master/graph/badge.svg)](https://codecov.io/gh/Tritbool/MT4S)
 ![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=alert_status)
 ![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=bugs)
