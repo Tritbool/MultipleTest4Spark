@@ -1,14 +1,14 @@
 # MT4S - Mutliple Tests 4 Spark #
-[![Build Status](https://travis-ci.org/Tritbool/MultipleTest4Spark.svg?branch=master)](https://travis-ci.org/Tritbool/MT4S)
-[![codecov](https://codecov.io/gh/Tritbool/MT4S/branch/master/graph/badge.svg)](https://codecov.io/gh/Tritbool/MT4S)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=alert_status)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=bugs)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=code_smells)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=sqale_rating)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=reliability_rating)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=security_rating)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=sqale_index)
-![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MT4S&metric=vulnerabilities)
+[![Build Status](https://travis-ci.org/Tritbool/MultipleTest4Spark.svg?branch=master)](https://travis-ci.org/Tritbool/MultipleTest4Spark)
+[![codecov](https://codecov.io/gh/Tritbool/MultipleTest4Spark/branch/master/graph/badge.svg)](https://codecov.io/gh/Tritbool/MultipleTest4Spark)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=alert_status)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=bugs)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=code_smells)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=sqale_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=reliability_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=security_rating)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=sqale_index)
+![Build Status](https://sonarcloud.io/api/project_badges/measure?project=MultipleTest4Spark&metric=vulnerabilities)
 ----------
 
 **MT4S is an under development framework that allows Scala/Spark developpers to rapidly instantiate tests classes for their Spark applications through Junit and/or ScalaTest.**
