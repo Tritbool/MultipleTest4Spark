@@ -9,10 +9,10 @@ scalaVersion := "2.12.4"
 resolvers += "Artima" at "http://repo.artima.com/releases"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.4.5",
-  "org.apache.spark" %% "spark-sql" % "2.4.5",
-  "org.apache.spark" %% "spark-hive" % "2.4.5",
-  "org.apache.spark" %% "spark-mllib" % "2.4.5",
+  "org.apache.spark" %% "spark-core" % "3.0.0-preview2",
+  "org.apache.spark" %% "spark-sql" % "3.0.0-preview2",
+  "org.apache.spark" %% "spark-hive" % "3.0.0-preview2",
+  "org.apache.spark" %% "spark-mllib" % "3.0.0-preview2",
   "com.novocode" % "junit-interface" % "0.11",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.scalactic" %% "scalactic" % "3.1.0",

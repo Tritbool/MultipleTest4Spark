@@ -506,7 +506,7 @@ info("as a spark developer")
 }
 ```
 ## LICENSE ##
-**This software is distributed under the GNU GPL license.**
-[https://www.gnu.org/licenses/](https://www.gnu.org/licenses/ "https://www.gnu.org/licenses/")
+**This software is distributed under the Apache 2.0 license.**
+[http://www.apache.org/licenses/LICENSE-2.0](http://www.apache.org/licenses/LICENSE-2.0 "http://www.apache.org/licenses/LICENSE-2.0")
 
-Copyright © 2018 Gauthier LYAN
+Copyright © 2020 Gauthier LYAN

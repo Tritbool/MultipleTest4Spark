@@ -3,23 +3,24 @@ package com.tritcorp.mt4s.scalaTest
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
 *
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR *CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
 */
 
 
 import com.tritcorp.mt4s.rddTools.RddTools
 import com.tritcorp.mt4s.rddTools.RddTools._
+import com.tritcorp.mt4s.Config._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{DataFrame, Row}
@@ -30,8 +31,8 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
   info("I want to be able to transform a RDD containing a csv read from file")
   info("Into a Spark DataFrame")
 
-  feature("RDD to DF implicit conversion") {
-    scenario("Converting CSV data separated by ',' from RDD to DataFrame") {
+  Feature("RDD to DF implicit conversion") {
+    Scenario("Converting CSV data separated by ',' from RDD to DataFrame") {
 
       val res: RDD[String] = sc.parallelize(Seq(
         "Valeur verité,Sujet,Verbe,Determinant Possessif,Complément",
@@ -42,7 +43,7 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
       assert(df.isInstanceOf[DataFrame])
       assert(df.count == 1)
     }
-    scenario("Converting CSV data separated by '¤' from RDD to DataFrame") {
+    Scenario("Converting CSV data separated by '¤' from RDD to DataFrame") {
       val res1: RDD[String] = sc.parallelize(Seq(
         "Valeur verité¤Sujet¤Verbe¤Determinant Possessif¤Complément",
         "oui¤je¤suis¤ton¤pere",
@@ -57,8 +58,8 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
   info("as a spark developer")
   info("I want to load a file from my resources folder")
 
-  feature("Load a file from resources and put its content into a RDD") {
-    scenario("loading a file, verify it has been loaded") {
+  Feature("Load a file from resources and put its content into a RDD") {
+    Scenario("loading a file, verify it has been loaded") {
 
       val expected: RDD[Row] = sc.parallelize(
         List(
@@ -67,6 +68,8 @@ class RDDToolsFeatureSpecExample extends FeatureSpecTest {
         ))
 
       val loaded:RDD[String] = RddTools.readRddLocal("/rddLoad.txt")
+
+
 
       assert(expected.equalsRDD(loaded))
 

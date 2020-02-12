@@ -3,22 +3,24 @@ package com.tritcorp.mt4s.dfTools
 /* MT4S - Multiple Tests 4 Spark - a simple Junit/Scalatest testing framework for spark
 * Copyright (C) 2018  Gauthier LYAN
 *
-* This program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
 *
-* This program is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU General Public License for more details.
+*Licensed under the Apache License, Version 2.0 (the "License");
+*you may not use this file except in compliance with the License.
+*You may obtain a copy of the License at
 *
-* You should have received a copy of the GNU General Public License
-* along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*    http://www.apache.org/licenses/LICENSE-2.0
+*
+*Unless required by applicable law or agreed to in writing, software
+*distributed under the License is distributed on an "AS IS" BASIS,
+*WITHOUT WARRANTIES OR *CONDITIONS OF ANY KIND, either express or implied.
+*See the License for the specific language governing permissions and
+*limitations under the License.
 */
 
 
 import java.sql.{Date, Timestamp}
+import java.text.{DateFormat, SimpleDateFormat}
+import java.util.{Locale, TimeZone}
 
 import com.tritcorp.mt4s.DebugDatasetBase
 import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, INFO, LogLevel, WARN}
@@ -26,6 +28,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.spark.sql.catalyst.util.DateTimeUtils
 import org.apache.spark.sql.DataFrame
 import com.tritcorp.mt4s.Constants._
+import org.apache.spark.sql.catalyst.util.DateTimeUtils.{SQLDate, SQLTimestamp}
 
 /**
   * DebugDF encapsulates a DataFrame and adds logging and debugging tools to it.
@@ -45,6 +48,51 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
   setLogLevel(logLvl)
 
 
+  def toJavaDate(daysSinceEpoch: SQLDate): Date = {
+    new Date(DateTimeUtils.daysToMillis(daysSinceEpoch))
+  }
+
+  private val threadLocalDateFormat = new ThreadLocal[DateFormat] {
+    override def initialValue(): SimpleDateFormat = {
+      new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+    }
+  }
+
+  def getThreadLocalDateFormat(timeZone: TimeZone): DateFormat = {
+    val sdf = threadLocalDateFormat.get()
+    sdf.setTimeZone(timeZone)
+    sdf
+  }
+
+  def dateToString(days: SQLDate): String =
+    getThreadLocalDateFormat(DateTimeUtils.defaultTimeZone()).format(toJavaDate(days))
+
+  private val threadLocalTimestampFormat = new ThreadLocal[DateFormat] {
+    override def initialValue(): SimpleDateFormat = {
+      new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
+    }
+  }
+
+
+  def getThreadLocalTimestampFormat(timeZone: TimeZone): DateFormat = {
+    val sdf = threadLocalTimestampFormat.get()
+    sdf.setTimeZone(timeZone)
+    sdf
+  }
+
+  def timestampToString(us: SQLTimestamp, timeZone: TimeZone): String = {
+    val ts = DateTimeUtils.toJavaTimestamp(us)
+    val timestampString = ts.toString
+    val timestampFormat = getThreadLocalTimestampFormat(timeZone)
+    val formatted = timestampFormat.format(ts)
+
+    if (timestampString.length > 19 && timestampString.substring(19) != ".0") {
+      formatted + timestampString.substring(19)
+    } else {
+      formatted
+    }
+  }
+
   /** Taken from Spark DataSet.scala code in order to allow to print dataframes in logs.
     *
     * @param df       the DataFrame to show
@@ -52,6 +100,8 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     * @param truncate the maximum number of rows to display
     * @return the df DataFrame as a String
     */
+
+
   private def showString(df: DataFrame, _numRows: Int, truncate: Int = 20): String = {
 
     val numRows = _numRows.max(0)
@@ -73,9 +123,9 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
           case array: Array[_] => array.mkString("[", ", ", "]")
           case seq: Seq[_] => seq.mkString("[", ", ", "]")
           case d: Date =>
-            DateTimeUtils.dateToString(DateTimeUtils.fromJavaDate(d))
+            dateToString(DateTimeUtils.fromJavaDate(d))
           case ts: Timestamp =>
-            DateTimeUtils.timestampToString(DateTimeUtils.fromJavaTimestamp(ts), timeZone)
+            timestampToString(DateTimeUtils.fromJavaTimestamp(ts), timeZone)
           case _ => cell.toString
         }
         if (truncate > 0 && str.length > truncate) {
@@ -176,14 +226,14 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     df.cache()
     thatReordered.cache()
 
-    var result:Int=0
+    var result: Int = 0
 
     // Compare schema sizes.
     if (df.schema.lengthCompare(that.schema.size) != 0) {
       logger.error("Schemas sizes are different :")
       logger.error("DF1 : " + df.columns.mkString("[", ";", "]"))
       logger.error("DF2 : " + that.columns.mkString("[", ";", "]"))
-      result=SCHEMAS_MATCH_ERR
+      result = SCHEMAS_MATCH_ERR
     }
     else {
 
@@ -241,20 +291,22 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
             df2SupDf1 = DF2_BIGGER_THAN_DF1
           }
 
-          result=df1SupDf2 + df2SupDf1
+          result = df1SupDf2 + df2SupDf1
 
         } else {
           val equality = df.union(thatReordered).except(df.intersect(thatReordered))
 
           if (equality.count == 0) {
             logger.warn("Dataframes contents are identical")
-            result=DF_EQUAL
+            result = DF_EQUAL
           }
-          else {result=UNKNOWN_ERR}
+          else {
+            result = UNKNOWN_ERR
+          }
         }
       }
       else {
-        result=schemasCheck
+        result = schemasCheck
       }
     }
     df.unpersist()
