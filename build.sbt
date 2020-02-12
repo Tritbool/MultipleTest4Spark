@@ -4,7 +4,7 @@ name := "MT4S"
 
 version := "1.12"
 
-scalaVersion := "2.12.10"
+scalaVersion := "2.12.4"
 
 libraryDependencies ++= Seq(
   "org.apache.spark" %% "spark-core" % "2.4.5",
