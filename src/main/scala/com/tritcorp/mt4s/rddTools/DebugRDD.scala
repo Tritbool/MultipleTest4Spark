@@ -4,6 +4,7 @@ import com.tritcorp.mt4s.DebugDatasetBase
 import com.tritcorp.mt4s.logger.DebugMode.WARN
 import com.tritcorp.mt4s.dfTools.DataframeTools._
 import com.tritcorp.mt4s.Constants._
+import com.tritcorp.mt4s.Config._
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.types.{StringType, StructField, StructType}
 import org.apache.spark.sql.{DataFrame, Row, SQLContext}
@@ -25,8 +26,6 @@ import org.apache.spark.sql.{DataFrame, Row, SQLContext}
 *limitations under the License.
 */
 class DebugRDD(rdd: RDD[Row]) extends DebugDatasetBase with Ordered[RDD[Row]] {
-
-  logLvl = WARN
 
   setLogLevel(logLvl)
 

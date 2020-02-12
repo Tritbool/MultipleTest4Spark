@@ -2,6 +2,7 @@ package com.tritcorp.mt4s
 
 import com.tritcorp.mt4s.logger.DebugMode.{LogLevel, WARN}
 import com.typesafe.scalalogging.LazyLogging
+import com.tritcorp.mt4s.Config._
 import org.apache.spark.SparkContext
 import org.apache.spark.sql.{SQLContext, SparkSession}
 
@@ -23,11 +24,6 @@ import org.apache.spark.sql.{SQLContext, SparkSession}
 */
 
 trait DebugDatasetBase extends LazyLogging{
-  protected var ss:SparkSession = _
-  protected var sc: SparkContext = _
-  protected var sqlContext: SQLContext = _
-  protected var logLvl:LogLevel = WARN
-
 
   /** used to set the log level of the test class
     *

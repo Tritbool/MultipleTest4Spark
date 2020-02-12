@@ -1,5 +1,6 @@
 package com.tritcorp.mt4s
 
+import com.tritcorp.mt4s.logger.DebugMode.{LogLevel, WARN}
 import org.apache.spark.{SparkConf, SparkContext}
 import org.apache.spark.sql.{SQLContext, SparkSession}
 
@@ -30,5 +31,6 @@ object Config {
   val ss: SparkSession = SparkSession.builder().config(conf).getOrCreate()
   val sc: SparkContext = ss.sparkContext
   val sqlContext: SQLContext = ss.sqlContext
+  var logLvl:LogLevel = WARN
 
 }

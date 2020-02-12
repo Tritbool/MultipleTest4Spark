@@ -22,6 +22,7 @@ import java.sql.{Date, Timestamp}
 import java.text.{DateFormat, SimpleDateFormat}
 import java.util.{Locale, TimeZone}
 
+import com.tritcorp.mt4s.Config._
 import com.tritcorp.mt4s.DebugDatasetBase
 import com.tritcorp.mt4s.logger.DebugMode.{DEBUG, INFO, LogLevel, WARN}
 import org.apache.commons.lang3.StringUtils
@@ -36,12 +37,6 @@ import org.apache.spark.sql.catalyst.util.DateTimeUtils.{SQLDate, SQLTimestamp}
   * @param df the DataFrame to debug
   */
 class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame] {
-
-
-  ss = df.sparkSession
-  sc = ss.sparkContext
-  sqlContext = ss.sqlContext
-  logLvl = WARN
 
   logger.debug("Current Spark app is : " + ss.sparkContext.appName)
 

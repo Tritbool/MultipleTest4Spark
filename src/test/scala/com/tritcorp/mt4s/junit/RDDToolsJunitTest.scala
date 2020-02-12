@@ -55,6 +55,18 @@ class RDDToolsJunitTest extends JunitTest {
   @Test
   def testRddCmpOK() {
 
+    println()
+
+    val r1 = sc.parallelize(
+      List(
+        Row.fromSeq(Seq(1.toString)),
+        Row.fromSeq(Seq("oui", "non")),
+        Row.fromSeq(Seq("Yes")),
+        Row.fromSeq(Seq("SUSS", "MOE")),
+        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
+        Row.fromSeq(Seq("Test", "Test1"))
+      )
+    )
 
     val r = sc.parallelize(
       List(
@@ -67,16 +79,7 @@ class RDDToolsJunitTest extends JunitTest {
       )
     )
 
-    val r1 = sc.parallelize(
-      List(
-        Row.fromSeq(Seq(1.toString)),
-        Row.fromSeq(Seq("oui", "non")),
-        Row.fromSeq(Seq("Yes")),
-        Row.fromSeq(Seq("SUSS", "MOE")),
-        Row.fromSeq(Seq("SUSS", "MOE", "BATER")),
-        Row.fromSeq(Seq("Test", "Test1"))
-      )
-    )
+
 
     assert(r.equalsRDD(r1))
     assert(r.>=(r1))
