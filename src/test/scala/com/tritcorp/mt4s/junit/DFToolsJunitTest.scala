@@ -121,8 +121,8 @@ class DFToolsJunitTest extends JunitTest {
       ("Maitre", "oui"),
       ("Femme", "non"))).toDF(columns: _*)
 
-    assert(df.compare(df2)==SCHEMAS_MATCH_ERR)
-    assert(df2.compare(df)==SCHEMAS_MATCH_ERR)
+    assert(df.compare(df2) == SCHEMAS_MATCH_ERR)
+    assert(df2.compare(df) == SCHEMAS_MATCH_ERR)
 
 
   }
@@ -141,8 +141,8 @@ class DFToolsJunitTest extends JunitTest {
       ("Femme", "non"),
       ("Enfant", "sussmoe"))).toDF(columns: _*)
 
-    assert(df.compare(df2)==DF2_BIGGER_THAN_DF1)
-    assert(df2.compare(df)==DF1_BIGGER_THAN_DF2)
+    assert(df.compare(df2) == DF2_BIGGER_THAN_DF1)
+    assert(df2.compare(df) == DF1_BIGGER_THAN_DF2)
 
   }
 
@@ -170,7 +170,7 @@ class DFToolsJunitTest extends JunitTest {
     import sqlContext.implicits._
 
     setLogLevel(WARN)
-    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien","WOUF")))
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien", "WOUF")))
     val df = rdd.toDF()
 
     df.show
@@ -182,8 +182,8 @@ class DFToolsJunitTest extends JunitTest {
 
     df2.showDebug()
 
-    assert(df.compare(df2)==DF1_AND_DF2_ROWS_DIFF)
-    assert(df2.compare(df)==DF1_AND_DF2_ROWS_DIFF)
+    assert(df.compare(df2) == DF1_AND_DF2_ROWS_DIFF)
+    assert(df2.compare(df) == DF1_AND_DF2_ROWS_DIFF)
 
   }
 
@@ -192,7 +192,7 @@ class DFToolsJunitTest extends JunitTest {
     import sqlContext.implicits._
 
     setLogLevel(WARN)
-    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien","WOUF"), X("Pâté","croûte")))
+    val rdd = sc.parallelize(List(X("oui", "Maitre"), X("non", "Femme"), X("Chien", "WOUF"), X("Pâté", "croûte")))
     val df = rdd.toDF()
 
     df.show
@@ -204,8 +204,8 @@ class DFToolsJunitTest extends JunitTest {
 
     df2.show
 
-    assert(df.compare(df2)==DF1_AND_DF2_ROWS_DIFF)
-    assert(df2.compare(df)==DF1_AND_DF2_ROWS_DIFF)
+    assert(df.compare(df2) == DF1_AND_DF2_ROWS_DIFF)
+    assert(df2.compare(df) == DF1_AND_DF2_ROWS_DIFF)
 
   }
 
@@ -224,8 +224,8 @@ class DFToolsJunitTest extends JunitTest {
       ("Enfant", "sussmoe", "Rascar-Kapac"))).toDF(columns: _*)
 
 
-    assert(df.compare(df2)==SCHEMAS_MATCH_ERR)
-    assert(df2.compare(df)==SCHEMAS_MATCH_ERR)
+    assert(df.compare(df2) == SCHEMAS_MATCH_ERR)
+    assert(df2.compare(df) == SCHEMAS_MATCH_ERR)
 
   }
 

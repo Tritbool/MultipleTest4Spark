@@ -2,7 +2,7 @@ organization := "com.tritcorp.exp"
 
 name := "MT4S"
 
-version := "1.12"
+version := "1.3.4"
 
 scalaVersion := "2.12.4"
 
@@ -18,4 +18,6 @@ libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.0.4",
   "org.scalatest" %% "scalatest" % "3.0.4"
 )
+scalacOptions += "-target:jvm-1.8"
 
+parallelExecution in Test := false
