@@ -42,39 +42,44 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
 
   setLogLevel(logLvl)
 
-
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   def toJavaDate(daysSinceEpoch: SQLDate): Date = {
     new Date(DateTimeUtils.daysToMillis(daysSinceEpoch))
   }
 
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   private val threadLocalDateFormat = new ThreadLocal[DateFormat] {
     override def initialValue(): SimpleDateFormat = {
       new SimpleDateFormat("yyyy-MM-dd", Locale.US)
     }
   }
 
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   def getThreadLocalDateFormat(timeZone: TimeZone): DateFormat = {
     val sdf = threadLocalDateFormat.get()
     sdf.setTimeZone(timeZone)
     sdf
   }
 
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   def dateToString(days: SQLDate): String =
     getThreadLocalDateFormat(DateTimeUtils.defaultTimeZone()).format(toJavaDate(days))
 
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   private val threadLocalTimestampFormat = new ThreadLocal[DateFormat] {
     override def initialValue(): SimpleDateFormat = {
       new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
     }
   }
 
-
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   def getThreadLocalTimestampFormat(timeZone: TimeZone): DateFormat = {
     val sdf = threadLocalTimestampFormat.get()
     sdf.setTimeZone(timeZone)
     sdf
   }
 
+  /** Taken from Spark 2.4 DataSet.scala code in order to allow to print dataframes in logs. **/
   def timestampToString(us: SQLTimestamp, timeZone: TimeZone): String = {
     val ts = DateTimeUtils.toJavaTimestamp(us)
     val timestampString = ts.toString
@@ -136,7 +141,7 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     val sb = new StringBuilder
     val numCols = schema.fieldNames.length
 
-    // Initialise the width of each column to a minimum value of '3'
+    // Initialize the width of each column to a minimum value of '3'
     val colWidths = Array.fill(numCols)(3)
 
     // Compute the width of each column
