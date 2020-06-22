@@ -40,7 +40,7 @@ MT4S is thought to be used as an help for Spark developments. According to this,
 ### Compile from source 
 
 **Requirements**
-
+- Java JDK 1.8
 - SBT 0.13+
 - Scala 2.11
 - Spark >= 2.2.1
