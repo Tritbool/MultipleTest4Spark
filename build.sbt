@@ -2,7 +2,7 @@ organization := "com.tritcorp.exp"
 
 name := "MT4S"
 
-version := "2.0-beta"
+version := "2.0"
 
 scalaVersion := "2.12.4"
 
