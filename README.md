@@ -42,8 +42,8 @@ MT4S is thought to be used as an help for Spark developments. According to this,
 **Requirements**
 - Java JDK 1.8
 - SBT 0.13+
-- Scala 2.11
-- Spark >= 2.2.1
+- Scala 2.12
+- Spark >= 3.0.0
 
 ***
 
