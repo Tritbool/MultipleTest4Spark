@@ -2,17 +2,17 @@ organization := "com.tritcorp.exp"
 
 name := "MT4S"
 
-version := "1.3.4"
+version := "2.0.1"
 
 scalaVersion := "2.12.4"
 
-resolvers += "Artima" at "http://repo.artima.com/releases"
+//resolvers += "Artima" at "http://repo.artima.com/releases"
 
 libraryDependencies ++= Seq(
-  "org.apache.spark" %% "spark-core" % "2.4.5",
-  "org.apache.spark" %% "spark-sql" % "2.4.5",
-  "org.apache.spark" %% "spark-hive" % "2.4.5",
-  "org.apache.spark" %% "spark-mllib" % "2.4.5",
+  "org.apache.spark" %% "spark-core" % "3.1.0",
+  "org.apache.spark" %% "spark-sql" % "3.1.0",
+  "org.apache.spark" %% "spark-hive" % "3.1.0",
+  "org.apache.spark" %% "spark-mllib" % "3.1.0",
   "com.novocode" % "junit-interface" % "0.11",
   "com.typesafe.scala-logging" %% "scala-logging" % "3.9.2",
   "org.scalactic" %% "scalactic" % "3.1.0",

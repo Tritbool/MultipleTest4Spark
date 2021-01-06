@@ -59,8 +59,8 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     val hasMoreData = takeResult.length > numRows
     val data = takeResult.take(numRows)
     val schema = df.schema
-    lazy val timeZone =
-      DateTimeUtils.getTimeZone(ss.sessionState.conf.sessionLocalTimeZone)
+    /*lazy val timeZone =
+      DateTimeUtils.getTimeZone(ss.sessionState.conf.sessionLocalTimeZone) */
 
     // For array values, replace Seq and Array with square brackets
     // For cells that are beyond `truncate` characters, replace it with the
@@ -73,9 +73,9 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
           case array: Array[_] => array.mkString("[", ", ", "]")
           case seq: Seq[_] => seq.mkString("[", ", ", "]")
           case d: Date =>
-            DateTimeUtils.dateToString(DateTimeUtils.fromJavaDate(d))
+            d.toString
           case ts: Timestamp =>
-            DateTimeUtils.timestampToString(DateTimeUtils.fromJavaTimestamp(ts), timeZone)
+            ts.toString.replace(".0", "")
           case _ => cell.toString
         }
         if (truncate > 0 && str.length > truncate) {
@@ -176,14 +176,14 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
     df.cache()
     thatReordered.cache()
 
-    var result:Int=0
+    var result: Int = 0
 
     // Compare schema sizes.
     if (df.schema.lengthCompare(that.schema.size) != 0) {
       logger.error("Schemas sizes are different :")
       logger.error("DF1 : " + df.columns.mkString("[", ";", "]"))
       logger.error("DF2 : " + that.columns.mkString("[", ";", "]"))
-      result=SCHEMAS_MATCH_ERR
+      result = SCHEMAS_MATCH_ERR
     }
     else {
 
@@ -241,20 +241,22 @@ class DebugDF(var df: DataFrame) extends DebugDatasetBase with Ordered[DataFrame
             df2SupDf1 = DF2_BIGGER_THAN_DF1
           }
 
-          result=df1SupDf2 + df2SupDf1
+          result = df1SupDf2 + df2SupDf1
 
         } else {
           val equality = df.union(thatReordered).except(df.intersect(thatReordered))
 
           if (equality.count == 0) {
             logger.warn("Dataframes contents are identical")
-            result=DF_EQUAL
+            result = DF_EQUAL
           }
-          else {result=UNKNOWN_ERR}
+          else {
+            result = UNKNOWN_ERR
+          }
         }
       }
       else {
-        result=schemasCheck
+        result = schemasCheck
       }
     }
     df.unpersist()
